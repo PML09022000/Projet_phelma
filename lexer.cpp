@@ -59,6 +59,7 @@ int main()
                   {
                     alphanum.clear();
                     //str[i] ? alphanum?
+
                     if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_'){
                      //si c'est un identifiant
                       while((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_')
@@ -71,6 +72,11 @@ int main()
                       }
                       cout << alphanum << endl;
                       //voir si keyword
+                      if(alphanum == "label" || alphanum == "digraphtest"){
+                        cout << "mot clef" << endl;
+                      }else{
+                        cout << "identifiant" << endl;
+                      }
 
                     }else{//si pas alphanum
                        if((str[i]== '[' || str[i]== '{' || str[i] == ']' || str[i]== '}' || str[i]== '"' || str[i]== ';')){
@@ -83,12 +89,19 @@ int main()
                            break;
 
                            case '-':
-                              cout << str[i] << endl;
+                              if(str[i+1] == '>'){
+                                cout << str[i] << str[i+1] << endl;
+                                i++;
+                              }else{
+                                cout << "erreur !!!" << it - txt_line_vector.begin() + 1 << endl;
+                              }
+                           break;
 
+                           case NULL :
                            break;
 
                            default:
-                              //std::cout << "ERREUR" << '\n';
+                              cout << "erreur !!!" << str[i] << it - txt_line_vector.begin() + 1 << endl;
                             break;
                          }
                        }
