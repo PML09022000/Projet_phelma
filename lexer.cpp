@@ -62,11 +62,10 @@ int main()
 
                     if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_'){
                      //si c'est un identifiant
-                      while((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_')
+                      while((str[i+1] >= 'A' && str[i+1] <= 'Z') || (str[i+1] >= 'a' && str[i+1] <= 'z') || (str[i+1] >= '0' && str[i+1] <= '9') || str[i+1] == '_')
                       {
                         i++;
                       }
-                      i--;
                       for (int k=p ; k <= i; k++){
                         alphanum.push_back(str[k]);
                       }
