@@ -8,24 +8,25 @@ using namespace std;
 
 enum Nature_grammaticale
 {
-    identifiant,
+    identifiant = 1,
     mot_clef,
     ponctuation,
-    operateurs,
-    valeur_numerique_logique
+    operateur,
 };
 
 class Symbole{
   private:
-    Nature_grammaticale m_nom;
+    Nature_grammaticale m_nature;
     string m_valeur;
     int m_line_index;
 
   public:
-    Symbole(Nature_grammaticale nom, string valeur, int line_index);
+    Symbole(Nature_grammaticale nature, string valeur, int line_index);
     ~Symbole();
-    void set_valeur(string valeur);
+
     int get_line_index();
+    string get_valeur();
+    Nature_grammaticale get_nature();
 };
 
 #endif

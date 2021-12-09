@@ -10,6 +10,11 @@
 
 using namespace std;
 
+// enum Lexeme_fsm_state{
+//   IS_NEXT_TOKEN_ALPHANUM,
+//   GET_ALPHANUM_TOKEN_END,
+// };
+
 
 int main()
 {
@@ -30,92 +35,70 @@ int main()
                 cout << "fichier fermé !" << endl;
 
 
-                // Affichage //
-                for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
-                    cout << *it << endl;
-                }
+                // // Affichage //
+                // for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
+                //     cout << *it << endl;
+                // }
 
                 // Sppression des espaces //
                 for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
                   (*it).erase(std::remove((*it).begin(), (*it).end(), ' '), (*it).end());
                 }
 
-                // Affichage //
-                for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
-                    cout << *it << endl;
-                }
+                // // Affichage //
+                // for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
+                //     cout << *it << endl;
+                // }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+                std::vector<Symbole> symbole_vector;
                 for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it)
                 {
-                  cout << "<Ligne complete>" << *it<<endl;
+                  // cout << "<Ligne complete>" << *it<<endl;
                   string str=*it; //  ligne de notre tableau de lignes
-                  string alphanum;
-                  int p = 0;
 
-               //pour toute la ligne
+                  string token;
+
                   for(int i = 0; i <= str.length(); i++)
                   {
-                    alphanum.clear();
-                    //str[i] ? alphanum?
 
-                    if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_'){
-                     //si c'est un identifiant
+                    token.clear();
+                    token.push_back(str[i]);
+                    //check si alphanum
+                    if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_')
+                    {
                       while((str[i+1] >= 'A' && str[i+1] <= 'Z') || (str[i+1] >= 'a' && str[i+1] <= 'z') || (str[i+1] >= '0' && str[i+1] <= '9') || str[i+1] == '_')
                       {
+                        token.push_back(str[i+1]);
                         i++;
                       }
-                      for (int k=p ; k <= i; k++){
-                        alphanum.push_back(str[k]);
-                      }
-                      cout << alphanum << endl;
-                      //voir si keyword
-                      if(alphanum == "label" || alphanum == "digraphtest"){
-                        cout << "mot clef" << endl;
+                      //check si keyword
+                      if(token == "label" || token == "digraphtest" || token == "INPUT" || token == "OUTPUT" || token == "AND2" || token == "XOR2"){
+                        Symbole S(mot_clef, token, it - txt_line_vector.begin() + 1);
+                        symbole_vector.push_back(S);
                       }else{
-                        cout << "identifiant" << endl;
+                        Symbole S(identifiant, token, it - txt_line_vector.begin() + 1);
+                        symbole_vector.push_back(S);
                       }
-
-                    }else{//si pas alphanum
-                       if((str[i]== '[' || str[i]== '{' || str[i] == ']' || str[i]== '}' || str[i]== '"' || str[i]== ';')){
-                          cout << str[i] << endl; // ponctuation
+                    }
+                    else
+                    {//si pas alphanum
+                       if(str[i]== '[' || str[i]== '{' || str[i] == ']' || str[i]== '}' || str[i]== '"' || str[i]== ';'){
+                          Symbole S(ponctuation, token, it - txt_line_vector.begin() + 1);
+                          symbole_vector.push_back(S);
                        }else{
-                         switch(str[i])
-                         {
-                           case '=':// operateur =
-                              cout << str[i] << endl;
-                           break;
-
-                           case '-':
-                              if(str[i+1] == '>'){
-                                cout << str[i] << str[i+1] << endl;
-                                i++;
-                              }else{
-                                cout << "erreur !!!" << it - txt_line_vector.begin() + 1 << endl;
-                              }
-                           break;
-
-                           case NULL :
-                           break;
-
-                           default:
-                              cout << "erreur !!!" << str[i] << it - txt_line_vector.begin() + 1 << endl;
-                            break;
+                         if(str[i]== '=' || str[i]== '-' || str[i] == '>'){
+                           Symbole S(operateur, token, it - txt_line_vector.begin() + 1);
+                           symbole_vector.push_back(S);
+                         }else{
+                           if (str[i] != 0)
+                             cout << "erreur ! " << str[i] << it - txt_line_vector.begin() + 1 << endl;
                          }
                        }
-                    }
-
-                    p = i+1;
-                    //sauvegarde lexemes/symbole
-                    //continue la ligne
-                }
-                //getline(sstream, symbole, delimiteur);
-
-                //Symbole Symb_test(mot_clef, "diagraph_test", 1);
-
-
-              }
+                     }
+                   }
+                 }
 
               // for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it)
               //    {
@@ -156,8 +139,19 @@ int main()
               //       cout << *it<<endl;// affichage de mots
               //      }
               //    }
+              // Symbole Symb_test1(mot_clef, "diagraph_test", 1);
+              // Symbole Symb_test2(identifiant, "I1", 1);
+              // std::vector<Symbole> Symbole_vector;
+              // Symbole_vector.push_back(Symb_test1);
+              // Symbole_vector.push_back(Symb_test2);
+              //
+              for(vector<Symbole>::iterator it = symbole_vector.begin(); it != symbole_vector.end(); ++it) {
+                Symbole symb = *it;
+                  cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
+              }
+
             }else { // sinon
                 cerr << "Impossible d'ouvrir le fichier !" << endl;
-              }
+            }
         return 0;
 }

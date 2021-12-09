@@ -1,8 +1,8 @@
 digraph test {
 
-I1[label="INPUT"];
-I2[label="INPUT"];
-I3[label="INPUT"];
+I1 [ label = "INPUT" ];
+I2 [ label = "INPUT" ];
+I3 [ label = "INPUT" ];
 
 MY_AND [label = "AND2" ];
 MY_XOR [label = "XOR2" ];
