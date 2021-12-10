@@ -38,3 +38,16 @@ int resultat Simulateur(vector<Noeud> &Noeud_vector)
   //
   //
   //    }
+
+
+
+  for(std::vector<Noeud>::iterator it = Noeud_vector.begin(); it != Noeud_vector.end(); it++)
+  {
+     if ((*it).get_type()=="OUTPUT")
+     {
+       Noeud* pointeur= *it;
+       while ((*pointeur).get_valeur()==2)
+          *pointeur= (*pointeur).get_adresse_pointeur();
+
+
+     }
