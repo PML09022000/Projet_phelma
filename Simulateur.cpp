@@ -18,11 +18,23 @@ int resultat Simulateur(vector<Noeud> &Noeud_vector)
 
 
   // On lit chaque noeud
-  // Si le type c'est input              val logique get.valeur== 0  ou 1
+  // Si le type c'est input                val logique get.valeur== 0  ou 1
   // Si le type est un output              val logique inconnue get.valeur==2
   // S'il s'agit d'un gate                val logique inconnue get.valeur==2
 
 
-  for(std::vector<Noeud>::iterator it = Noeud_vector.begin(); it != Noeud_vector.end(); ++it)
 
-  {
+
+
+
+
+  // for(std::vector<Noeud>::iterator it = Noeud_vector.end(); it != Noeud_vector.begin(); it--)
+  // {
+  //    if ((*it).get_type()=="OUTPUT")
+  //    {
+  //      Noeud* pointeur= *it;
+  //      while ((*pointeur).get_valeur()==2)
+  //         *pointeur= (*pointeur).get_adresse_pointeur();
+  //
+  //
+  //    }
