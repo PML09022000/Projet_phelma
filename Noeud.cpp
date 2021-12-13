@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-Noeud::Noeud(string nom1, TYPE_enum type1, int nb): m_nom(nom1), m_type(type1), m_nb_inout(nb) // liste d'initialisation
+Noeud::Noeud(string nom1, TYPE_enum type1, int nb): m_nom(nom1), m_type(type1), m_nb_inout(nb), m_valeur(2) // liste d'initialisation
 {
   //std::cout << "Construction of class Noeud"<< std::endl;
 }
@@ -26,7 +26,7 @@ Noeud::~Noeud()
 string Noeud::  get_nom() const {
   return this-> m_nom;
 }
-bool Noeud:: get_valeur()const{
+int Noeud:: get_valeur()const{
    return this-> m_valeur;
 }
 
@@ -63,7 +63,7 @@ void Noeud::set_nom(string name){
   this->m_nom=name;
 }
 
-void Noeud::set_logic_state (bool val){
+void Noeud::set_logic_state (int val){
    this-> m_valeur=val;
 }
 

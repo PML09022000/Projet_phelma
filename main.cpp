@@ -45,14 +45,16 @@ int main()
                     cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
                 }
 
-                static_noeud_map = parser(symbole_vector);
+                map<string, Noeud> noeud_map = parser(symbole_vector);
 
-                for(map<string, Noeud>::iterator it = static_noeud_map.begin(); it != static_noeud_map.end(); ++it) {
+                for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
                   Noeud noeud = it->second;
                   cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : ";
                   noeud.print_link();
                   cout << endl;
                 }
+
+                int resultat = Simulateur(noeud_map);
 
 
 

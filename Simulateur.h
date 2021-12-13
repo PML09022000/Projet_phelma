@@ -6,9 +6,7 @@
 #include "Noeud.h"
 #include <map>
 
-static map<string, Noeud>  static_noeud_map;
-
-//int resultat Simulateur( map<string,Noeud> noeud_vector);
+int Simulateur(map<string, Noeud> noeud_map);
 
 
 #endif
