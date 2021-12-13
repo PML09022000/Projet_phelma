@@ -10,7 +10,7 @@
 
 #include "symbole.h"
 #include "Noeud.h"
-
+#include "parser.h"
 using namespace std;
 
 enum CREATE_AND_COMPLETE_NOEUD_FSM_STATES{
@@ -31,7 +31,7 @@ static bool is_it_a_declaration(Nature_grammaticale n);
 static Noeud create_a_noeud(string name, string type);
 
 
-void parser(vector<Symbole> &symbole_vector){
+map<string,Noeud> parser(vector<Symbole> &symbole_vector){
 
     bool decoupage_ok = parser_decoupage(symbole_vector); // Le Parser_Decoupage recupere un vecteur de symboles
                                                           // On doit verifier l'ordre
@@ -61,7 +61,7 @@ void parser(vector<Symbole> &symbole_vector){
       si non regarder si la structure de la ligne correspond à une déclaration de variable ==> appel de fonction
         si tout est OK création d'un noeud avec comme nom la valeur de l'identifiant, comme type la valeur du mot clef situé à 3 symboles, nb input dépend du mot clef
     */
-
+    return noeud_vector;
   }
 
 map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
@@ -188,17 +188,37 @@ bool parser_decoupage(vector<Symbole> &symbole_vector){
   //Je ne parcoure pas les 2 dernieres symboles parce que je vais verifier appart que c'est bien ; et }
 
   //       Chaque *it pointe sur un symbole
-  //       //Identifiant doit etre suivie de ponctuation [, ou ;  ou operateur -
+  //       //Identifiant doit etre suivie de ponctuation [, ou   ou operateur -
+
 
        if( (*it).get_nature()==identifiant )
         {
-          if( (*(it+1)).get_valeur()!="[" && (*(it+1)).get_valeur()!=";" && (*(it+1)).get_valeur()!= "-")
+
+          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" )
+          //Identifiant doit etre suivie par [ ou  ;
           {
-            count++;
-            line_index_error= (*it).get_line_index();
-            cout << "Error found on line:  " <<line_index_error<<'\n';
+            if ( (*(it+1)).get_valeur()== "-")
+             // sinon suivie par -
+            {
+              // on regarde par quoi il est precedé
+                if ( (*(it-1)).get_valeur()==">" && (*(it+2)).get_valeur()== ">" && (*(it+3)).get_nature()!= identifiant)
+                {
+                  count++;
+                  line_index_error= (*it).get_line_index();
+                  cout << "Error found on line:  " <<line_index_error<<'\n';
+
+                  }
+              }
+
+              else
+              {
+                count++;
+                line_index_error= (*it).get_line_index();
+                cout << "Error found on line:  " <<line_index_error<<'\n';
+              }
+
+            }
           }
-        }
 
   //  //      "[" doit etre suivi de identifiant, probleme de ] à gerer
   else if( (*it).get_valeur()=="[" )
@@ -290,71 +310,66 @@ bool parser_decoupage(vector<Symbole> &symbole_vector){
                   }
 
     //      > est suivi de identifiant
-
-                        else if( (*it).get_valeur()==">" )
+          else if( (*it).get_valeur()==">" )
                                 {
                                    if( (*(it+1)).get_nature()!= identifiant )
                                        {
                                          count++;
-                                         if( (*(it+2)).get_valeur()!="-" )
-                                             {
-                                               count++;
-                                             }
                                          line_index_error= (*it).get_line_index();
                                          cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       }
-                                  }
+                                        }
+                                 }
 
 
   }
 
   //  Verification des premieres et dernieres symboles
   //  premier symbole doit etre digraph
-  if(symbole_vector[0].get_valeur()!= "digraph")
-  {
-    count++;
+            if(symbole_vector[0].get_valeur()!= "digraph")
+            {
+              count++;
 
-    cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
-  }
-  // deuxieme symbole doit etre identifiant
-  if(symbole_vector[1].get_nature()!= identifiant)
-        {
-          count++;
-          cout << "Error found on line:  " << symbole_vector[1].get_line_index()<<'\n';
-        }
+              cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
+            }
+            // deuxieme symbole doit etre identifiant
+            if(symbole_vector[1].get_nature()!= identifiant)
+                  {
+                    count++;
+                    cout << "Error found on line:  " << symbole_vector[1].get_line_index()<<'\n';
+                  }
 
-  //  troisieme symbole doit etre {
-  if(symbole_vector[2].get_valeur()!= "{")
-  {
-  count++;
-  cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
-  }
+            //  troisieme symbole doit etre {
+            if(symbole_vector[2].get_valeur()!= "{")
+            {
+            count++;
+            cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
+            }
 
   //  Dernier symbole doit etre {
   // Recuperation du dernier symbole de notre symbole vecteur
 
   //cout<<(*((symbole_vector.end()-1))).get_valeur()<<endl;
 
-  if((*((symbole_vector.end()-1))).get_valeur()!= "}")
-  {
-  count++;
-  cout << "Error found on line:  " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
-  }
+              if((*((symbole_vector.end()-1))).get_valeur()!= "}")
+              {
+              count++;
+              cout << "Error found on line:  " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
+              }
 
-  //  Avant dernier symbole doit etre ;
+              //  Avant dernier symbole doit etre ;
 
-  if((*((symbole_vector.end()-2))).get_valeur()!= ";")
-  {
-  count++;
-  cout << "Error found on line:  " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
-  }
+              if((*((symbole_vector.end()-2))).get_valeur()!= ";")
+              {
+              count++;
+              cout << "Error found on line:  " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
+              }
 
   // Affichage des erreurs et des numeros de lignes
 
-  if(count==0) {
-  cout << "No errors found" << '\n';
-  }
-  else {
-  cout << "Nb errors " << count<<'\n';
-  }
-}
+        if(count==0) {
+        cout << "No errors found" << '\n';
+        }
+        else {
+        cout << "Nb errors " << count<<'\n';
+        }
+      }
