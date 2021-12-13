@@ -36,7 +36,7 @@ class Noeud {
     TYPE_enum get_type() const;
     bool get_valeur() const;
     int get_nb_inout() const;
-    string get_link() const;
+    void print_link() ;
 
 
     //

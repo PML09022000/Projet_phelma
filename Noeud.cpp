@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iterator>
 #include <iomanip>
 #include <string.h>
 #include <stdio.h>
@@ -39,9 +40,14 @@ TYPE_enum Noeud::get_type() const{
   return this-> m_type;
 }
 
-string Noeud:: get_link() const {
-  return m_noeud_noms_pre[0];
+void Noeud:: print_link() {
+  ostream_iterator<string> it(cout, ", ");
+  for(std::vector<string>::iterator it_noeud = m_noeud_noms_pre.begin(); it_noeud != m_noeud_noms_pre.end(); ++it_noeud){
+    *it = *it_noeud;
+  }
 }
+
+
 
 ////////////////////////////////////////:
 

@@ -51,8 +51,9 @@ void parser(vector<Symbole> &symbole_vector){
 
     for(map<string, Noeud>::iterator it = noeud_vector.begin(); it != noeud_vector.end(); ++it) {
       Noeud noeud = it->second;
-      cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< endl;
-      //cout << "Link : " << noeud.get_link() << endl;
+      cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : ";
+      noeud.print_link();
+      cout << endl;
     }
 
     /* regarder l'identifiant a été répertorier
@@ -88,28 +89,38 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
                 break;
 
               case OLD_IDENTIFIANT :
+                cout << (*it1).get_valeur() <<endl;
                 next_state = (is_it_a_declaration((*(it1+5)).get_nature()) == true) ? FINISHED : ADD_LINK;
               break;
               case ADD_LINK :
                 it = noeud_map.find((*it1).get_valeur());
+                //cout << "TYPE : "<< (it->second).get_type()<< endl;
                 switch( (it->second).get_type() ){
 
                   case INPUT :
+                  //cout << "ici INPUT"<< (*(it1-3)).get_valeur() << endl;
                   next_state = ((*(it1-1)).get_valeur() == ";") ? FINISHED : FINISHED;
                   break;
 
                   case OUTPUT :
-                  next_state = ((*(it1+1)).get_valeur() == ";") ? FINISHED : FINISHED;
                   (it->second).add_link_to_previous_noeud((*(it1-3)).get_valeur());
+                  //cout << "ici OUTPUT"<< (*(it1-3)).get_valeur() << endl;
+                  next_state = FINISHED;
                   break;
 
                   default :
+                  if((*(it1-1)).get_valeur() == ">" && (*(it1-2)).get_valeur() == "-"){
+                    (it->second).add_link_to_previous_noeud((*(it1-3)).get_valeur());
+                  }else{
+                  }
                   next_state = FINISHED;
 
                   break;
 
                 }
               break;
+
+
               case FINISHED :
 
               break;
@@ -140,7 +151,7 @@ bool is_it_a_declaration(Nature_grammaticale n){
 
 Noeud create_a_noeud(string str_name, string str_type){
   if(str_type == "INPUT"){
-    Noeud new_noeud(str_name, INPUT, 0);
+    Noeud new_noeud(str_name, INPUT, 1);
     return new_noeud;
   }
   if(str_type == "OUTPUT"){
