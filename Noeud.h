@@ -38,6 +38,8 @@ class Noeud {
     int get_nb_inout() const;
     void print_link() ;
 
+    vector<string> get_links() const;
+
 
     //
     void set_nom(string name);

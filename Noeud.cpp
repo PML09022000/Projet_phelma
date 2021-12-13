@@ -48,6 +48,14 @@ void Noeud:: print_link() {
 }
 
 
+vector<string> Noeud:: get_links() const
+{
+  return this-> m_noeud_noms_pre;
+
+}
+
+
+
 
 ////////////////////////////////////////:
 

@@ -289,6 +289,22 @@ bool parser_decoupage(vector<Symbole> &symbole_vector){
                        }
                   }
 
+    //      > est suivi de identifiant
+
+                        else if( (*it).get_valeur()==">" )
+                                {
+                                   if( (*(it+1)).get_nature()!= identifiant )
+                                       {
+                                         count++;
+                                         if( (*(it+2)).get_valeur()!="-" )
+                                             {
+                                               count++;
+                                             }
+                                         line_index_error= (*it).get_line_index();
+                                         cout << "Error found on line:  " <<line_index_error<<'\n';
+                                       }
+                                  }
+
 
   }
 
