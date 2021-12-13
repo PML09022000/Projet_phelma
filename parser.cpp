@@ -172,198 +172,458 @@ Noeud create_a_noeud(string str_name, string str_type){
 }
 
 
+enum VERIFICATION_DECOUPAGE_FSM_STATES{
+    S1,
+    S2,
+    S3,
+    ID_S4,
+    S5,
+    S6,
+    S7,
+    S8,
+    S9,
+    S10,
+    S11,
+    S12,
+    S13,
+    S14,
+    S15,
+    NULL_STATE
+  };
 
 
 
-bool parser_decoupage(vector<Symbole> &symbole_vector){
-  int count= 0;
-  // Compteur qui va etre à 0 si pas d'erreurs
-  // Valeur de compteur differente de 0 si'il y a des erreurs
-  int line_index_error=0;
-  // Ligne ou on constate l'erreur
+bool parser_decoupage(vector<Symbole> &symbole_vector)
+{
 
 
-  for(std::vector<Symbole>::iterator it = (symbole_vector.begin()+3); it != (symbole_vector.end()-2); ++it)
-  {
-  //Je ne parcoure pas les 2 dernieres symboles parce que je vais verifier appart que c'est bien ; et }
+  int count=0;
+   int line_index_error=0;
 
-  //       Chaque *it pointe sur un symbole
-  //       //Identifiant doit etre suivie de ponctuation [, ou   ou operateur -
+  // for(std::vector<Symbole>::iterator it = symbole_vector.begin(); it != symbole_vector.end())
+  //  {
 
+  std::vector<Symbole>::iterator it = symbole_vector.begin();
+while(it!= symbole_vector.end()){
+     VERIFICATION_DECOUPAGE_FSM_STATES next_state = S1;
 
-       if( (*it).get_nature()==identifiant )
-        {
+     if(symbole_vector[0].get_valeur()!= "digraph"){
 
-          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" )
-          //Identifiant doit etre suivie par [ ou  ;
-          {
-            if ( (*(it+1)).get_valeur()== "-")
-             // sinon suivie par -
-            {
-              // on regarde par quoi il est precedé
-                if ( (*(it-1)).get_valeur()==">" && (*(it+2)).get_valeur()== ">" && (*(it+3)).get_nature()!= identifiant)
-                {
-                  count++;
-                  line_index_error= (*it).get_line_index();
-                  cout << "Error found on line:  " <<line_index_error<<'\n';
+       VERIFICATION_DECOUPAGE_FSM_STATES next_state = S1;
+        count++;
+        cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';}
+         it++;
 
-                  }
-              }
+while (next_state != NULL_STATE){
 
-              else
-              {
-                count++;
-                line_index_error= (*it).get_line_index();
-                cout << "Error found on line:  " <<line_index_error<<'\n';
-              }
+      switch (next_state){
+        /////////////////////
+            case S1 :
+                next_state =S2;
 
-            }
-          }
+                 if( (*it).get_nature()!=identifiant )
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                break;
 
-  //  //      "[" doit etre suivi de identifiant, probleme de ] à gerer
-  else if( (*it).get_valeur()=="[" )
-         {
-           if( (*(it+1)).get_nature()!= mot_clef || (*(it-1)).get_nature()!= identifiant )
-           {
-             count++;
-             line_index_error= (*it).get_line_index();
-             cout << "Error found on line:  " <<line_index_error<<'\n';
-           }
-          }
-  //
-  // //      mot clef label  doit etre suivi de =
-  //
-        else if( (*it).get_valeur()== "label" )
-          {
-            if( (*(it+1)).get_valeur()!= "=" )
-            {
-              count++;
-              line_index_error= (*it).get_line_index();
-              cout << "Error found on line:  " <<line_index_error<<'\n';
-            }
-           }
-  //      =  est suivi de "
+        /////////////////////
+            case S2 :
 
-      else  if( (*it).get_valeur()== "=" )
-          {
-            if( ((*(it+1)).get_valeur()[0])!= '"' )
-            {
-              count++;
-              line_index_error= (*it).get_line_index();
-              cout << "Error found on line:  " <<line_index_error<<'\n';
-            }
-           }
-  //
-  //
-  // //      "  est suivi de mot_clef
-  //
-           else if( (*it).get_valeur()[0]=='"' )
+            next_state = S3;
+             if( (*it).get_valeur()!= "{" )
              {
-               if( (*(it+1)).get_nature()== mot_clef )
-               { // Verification du couple ""
-                    if( (*(it+2)).get_valeur()[0]!= '"'  )
-                    {
-                      count++;
-                      line_index_error= (*it).get_line_index();
-                      cout << "Error found on line:  " <<line_index_error<<'\n';
-                    }
-                }
-              else if ( (*(it+1)).get_valeur()!= "]" )
-                {
-                  count++;
-                  line_index_error= (*it).get_line_index();
-                  cout << "Error found on line:  " <<line_index_error<<'\n';
-                }
-              }
-
-  //      ]  est suivi de ';'
-          else if( (*it).get_valeur()=="]" )
-              {
-                if( (*(it+1)).get_valeur()!= ";" )
-                    {
-                      count++;
-                      line_index_error= (*it).get_line_index();
-                      cout << "Error found on line:  " <<line_index_error<<'\n';
-                    }
-               }
-  //      ; est suivi de identifiant
-        else if( (*it).get_valeur()==";" )
-           {
-              if( (*(it+1)).get_nature()!=identifiant )
-                  {
-                    count++;
-                    line_index_error= (*it).get_line_index();
-                    cout << "Error found on line:  " <<line_index_error<<'\n';
-                  }
+               count++;
+                   line_index_error= (*it).get_line_index();
+                          cout << "Error found on line:  " <<line_index_error<<'\n';
              }
+             it++;
+              break;
 
-  //      - est suivi de >
+            case S3 :
+            next_state =ID_S4;
+             if( (*it).get_nature()!=identifiant )
+             {
+               count++;
+                   line_index_error= (*it).get_line_index();
+                          cout << "Error found on line:  " <<line_index_error<<'\n';
+             }
+             it++;
+            break;
 
-        else if( (*it).get_valeur()=="-" )
-                {
-                   if( (*(it+1)).get_valeur()!= ">" )
+            case ID_S4 : // plusieurs possibilités à gerer
+            next_state = S5;
+              if( (*it).get_valeur()!="["  && (*it).get_valeur()!="-" )
+                   {
+                     count++;
+                         line_index_error= (*it).get_line_index();
+                                cout << "Error found on line:  " <<line_index_error<<'\n';
+                   }
+                    it++;
+                    break;
+
+            case S5: // plusieurs possibilités à gerer
+
+              if( (*it).get_valeur()=="[" )
+               {
+                 next_state=S6;
+               }
+
+              else if( (*it).get_valeur()=="-" )
+              {
+                next_state=S13;
+              }
+                it++;
+                break;
+
+            case S6:
+
+
+             next_state= S7;
+
+              if( (*it).get_valeur()!="label" )
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                  break;
+
+
+            case S7:
+
+             next_state= S8;
+              if( (*it).get_valeur()!="=" )
+                     {
+                       count++;
+                           line_index_error= (*it).get_line_index();
+                                  cout << "Error found on line:  " <<line_index_error<<'\n';
+                     }
+                      it++;
+                      break;
+
+            case S8:
+
+             next_state= S9;
+              if(  ((*it).get_valeur()[0])!= '"' )
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                 break;
+
+            case S9: //
+
+             next_state= S10;
+              if(  (*it).get_nature()!= mot_clef || (*it).get_valeur()== "label" || (*it).get_valeur()== "digraph")
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                 break;
+
+            case S10: //
+                next_state= S11;
+
+              if(  ((*it).get_valeur()[0])!= '"' )
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                  break;
+
+            case S11: //
+              next_state= S12;
+
+              if(  (*it).get_valeur()!= "]"  )
+                 {
+                   count++;
+                       line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                 }
+                 it++;
+                 break;
+
+            case S12: // si pas de ; erreur
+
+                    if(  ((*it).get_valeur())!= ";" )
+                         {
+                           count++;
+                               line_index_error= (*it).get_line_index();
+                                      cout << "Error found on line:  " <<line_index_error<<'\n';
+                         }
+                   else{
+
+                         if(  ((*(it+1)).get_nature())== identifiant )
+
+                              next_state= S5;
+
+                        else if( ((*(it+1)).get_valeur())== "}" )
+
+                              next_state= NULL_STATE;
+                              }
+                              it++;
+                            break;
+
+            case S13: // si identifiant suivi par -
+
+                    if( (*(it)).get_valeur()!=">" )
+                   {
+                     count++;
+                         line_index_error= (*it).get_line_index();
+                                cout << "Error found on line:  " <<line_index_error<<'\n';
+                   }
+
+                  next_state=S14;
+                  it++;
+                break;
+
+            case S14:
+                      if( (*it).get_nature()!=identifiant )
+                     {
+                       count++;
+                           line_index_error= (*it).get_line_index();
+                                  cout << "Error found on line:  " <<line_index_error<<'\n';
+                     }
+
+                      next_state=S15;
+                      it++;
+                    break;
+
+              case S15:
+              // plusieurs possibilités à gerer
+
+                        if( (*(it)).get_valeur()!="-"  && (*(it)).get_valeur()!=";" )
                        {
                          count++;
-                         line_index_error= (*it).get_line_index();
-                         cout << "Error found on line:  " <<line_index_error<<'\n';
+                             line_index_error= (*it).get_line_index();
+                                    cout << "Error found on line:  " <<line_index_error<<'\n';
                        }
-                  }
+                        else if( (*(it)).get_valeur()=="-" )
+                       {
+                         next_state=S13;
+                       }
 
-    //      > est suivi de identifiant
-          else if( (*it).get_valeur()==">" )
-                                {
-                                   if( (*(it+1)).get_nature()!= identifiant )
-                                       {
-                                         count++;
-                                         line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                        }
-                                 }
+                       else if( (*(it)).get_valeur()==";" )
+                      {
+                        next_state=ID_S4;
+                      }
+                      it++;
+                      break;
 
+            default:   cout << "erreur de FSM " <<'\n';
+              break;
 
-  }
+            case NULL_STATE:
 
-  //  Verification des premieres et dernieres symboles
-  //  premier symbole doit etre digraph
-            if(symbole_vector[0].get_valeur()!= "digraph")
-            {
-              count++;
+                  break;
 
-              cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
-            }
-            // deuxieme symbole doit etre identifiant
-            if(symbole_vector[1].get_nature()!= identifiant)
-                  {
-                    count++;
-                    cout << "Error found on line:  " << symbole_vector[1].get_line_index()<<'\n';
-                  }
+                }// fermeture du case
+            }// fermeture du while
+          }// fermeture du while
+  // int count= 0;
+  // // Compteur qui va etre à 0 si pas d'erreurs
+  // // Valeur de compteur differente de 0 si'il y a des erreurs
+  // int line_index_error=0;
+  // // Ligne ou on constate l'erreur
 
-            //  troisieme symbole doit etre {
-            if(symbole_vector[2].get_valeur()!= "{")
-            {
-            count++;
-            cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
-            }
-
-  //  Dernier symbole doit etre {
-  // Recuperation du dernier symbole de notre symbole vecteur
-
-  //cout<<(*((symbole_vector.end()-1))).get_valeur()<<endl;
-
-              if((*((symbole_vector.end()-1))).get_valeur()!= "}")
-              {
-              count++;
-              cout << "Error found on line:  " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
-              }
-
-              //  Avant dernier symbole doit etre ;
-
-              if((*((symbole_vector.end()-2))).get_valeur()!= ";")
-              {
-              count++;
-              cout << "Error found on line:  " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
-              }
-
+  //
+  // for(std::vector<Symbole>::iterator it = (symbole_vector.begin()+3); it != (symbole_vector.end()-2); ++it)
+  // {
+  // //Je ne parcoure pas les 2 dernieres symboles parce que je vais verifier appart que c'est bien ; et }
+  //
+  // //       Chaque *it pointe sur un symbole
+  // //       //Identifiant doit etre suivie de ponctuation [, ou   ou operateur -
+  //
+  //
+  //      if( (*it).get_nature()==identifiant )
+  //       {
+  //
+  //         if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" )
+  //         //Identifiant doit etre suivie par [ ou  ;
+  //         {
+  //           if ( (*(it+1)).get_valeur()== "-")
+  //            // sinon suivie par -
+  //           {
+  //             // on regarde par quoi il est precedé
+  //               if ( (*(it-1)).get_valeur()==">" && (*(it+2)).get_valeur()== ">" && (*(it+3)).get_nature()!= identifiant)
+  //               {
+  //                 count++;
+  //                 line_index_error= (*it).get_line_index();
+  //                 cout << "Error found on line:  " <<line_index_error<<'\n';
+  //
+  //                 }
+  //             }
+  //
+  //             else
+  //             {
+  //               count++;
+  //               line_index_error= (*it).get_line_index();
+  //               cout << "Error found on line:  " <<line_index_error<<'\n';
+  //             }
+  //
+  //           }
+  //         }
+  //
+  // //  //      "[" doit etre suivi de identifiant, probleme de ] à gerer
+  // else if( (*it).get_valeur()=="[" )
+  //        {
+  //          if( (*(it+1)).get_nature()!= mot_clef || (*(it-1)).get_nature()!= identifiant )
+  //          {
+  //            count++;
+  //            line_index_error= (*it).get_line_index();
+  //            cout << "Error found on line:  " <<line_index_error<<'\n';
+  //          }
+  //         }
+  // //
+  // // //      mot clef label  doit etre suivi de =
+  // //
+  //       else if( (*it).get_valeur()== "label" )
+  //         {
+  //           if( (*(it+1)).get_valeur()!= "=" )
+  //           {
+  //             count++;
+  //             line_index_error= (*it).get_line_index();
+  //             cout << "Error found on line:  " <<line_index_error<<'\n';
+  //           }
+  //          }
+  // //      =  est suivi de "
+  //
+  //     else  if( (*it).get_valeur()== "=" )
+  //         {
+  //           if( ((*(it+1)).get_valeur()[0])!= '"' )
+  //           {
+  //             count++;
+  //             line_index_error= (*it).get_line_index();
+  //             cout << "Error found on line:  " <<line_index_error<<'\n';
+  //           }
+  //          }
+  // //
+  // //
+  // // //      "  est suivi de mot_clef
+  // //
+  //          else if( (*it).get_valeur()[0]=='"' )
+  //            {
+  //              if( (*(it+1)).get_nature()== mot_clef )
+  //              { // Verification du couple ""
+  //                   if( (*(it+2)).get_valeur()[0]!= '"'  )
+  //                   {
+  //                     count++;
+  //                     line_index_error= (*it).get_line_index();
+  //                     cout << "Error found on line:  " <<line_index_error<<'\n';
+  //                   }
+  //               }
+  //             else if ( (*(it+1)).get_valeur()!= "]" )
+  //               {
+  //                 count++;
+  //                 line_index_error= (*it).get_line_index();
+  //                 cout << "Error found on line:  " <<line_index_error<<'\n';
+  //               }
+  //             }
+  //
+  // //      ]  est suivi de ';'
+  //         else if( (*it).get_valeur()=="]" )
+  //             {
+  //               if( (*(it+1)).get_valeur()!= ";" )
+  //                   { if(symbole_vector[0].get_valeur()!= "digraph")
+  //           {
+  //             count++;
+  //
+  //             cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
+  //           }
+  //                     count++;
+  //                     line_index_error= (*it).get_line_index();
+  //                     cout << "Error found on line:  " <<line_index_error<<'\n';
+  //                   }
+  //              }
+  // //      ; est suivi de identifiant
+  //       else if( (*it).get_valeur()==";" )
+  //          {
+  //             if( (*(it+1)).get_nature()!=identifiant )
+  //                 {
+  //                   count++;
+  //                   line_index_error= (*it).get_line_index();
+  //                   cout << "Error found on line:  " <<line_index_error<<'\n';
+  //                 }
+  //            }
+  //
+  // //      - est suivi de >
+  //
+  //       else if( (*it).get_valeur()=="-" )
+  //               {
+  //                  if( (*(it+1)).get_valeur()!= ">" )
+  //                      {
+  //                        count++;
+  //                        line_index_error= (*it).get_line_index();
+  //                        cout << "Error found on line:  " <<line_index_error<<'\n';
+  //                      }
+  //                 }
+  //
+  //   //      > est suivi de identifiant
+  //         else if( (*it).get_valeur()==">" )
+  //                               {
+  //                                  if( (*(it+1)).get_nature()!= identifiant )
+  //                                      {
+  //                                        count++;
+  //                                        line_index_error= (*it).get_line_index();
+  //                                        cout << "Error found on line:  " <<line_index_error<<'\n';
+  //                                       }
+  //                                }
+  //
+  //
+  // }
+  //
+  // //  Verification des premieres et dernieres symboles
+  // //  premier symbole doit etre digraph
+  //           if(symbole_vector[0].get_valeur()!= "digraph")
+  //           {
+  //             count++;
+  //
+  //             cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
+  //           }
+  //           // deuxieme symbole doit etre identifiant
+  //           if(symbole_vector[1].get_nature()!= identifiant)
+  //                 {
+  //                   count++;
+  //                   cout << "Error found on line:  " << symbole_vector[1].get_line_index()<<'\n';
+  //                 }
+  //
+  //           //  troisieme symbole doit etre {
+  //           if(symbole_vector[2].get_valeur()!= "{")
+  //           {
+  //           count++;
+  //           cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
+  //           }
+  //
+  // //  Dernier symbole doit etre {
+  // // Recuperation du dernier symbole de notre symbole vecteur
+  //
+  // //cout<<(*((symbole_vector.end()-1))).get_valeur()<<endl;
+  //
+  //             if((*((symbole_vector.end()-1))).get_valeur()!= "}")
+  //             {
+  //             count++;
+  //             cout << "Error found on line:  " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
+  //             }
+  //
+  //             //  Avant dernier symbole doit etre ;
+  //
+  //             if((*((symbole_vector.end()-2))).get_valeur()!= ";")
+  //             {
+  //             count++;
+  //             cout << "Error found on line:  " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
+  //             }
+  //
   // Affichage des erreurs et des numeros de lignes
 
         if(count==0) {
