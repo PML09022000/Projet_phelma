@@ -14,20 +14,24 @@ using namespace std;
 
 
 void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
+
   std::map<string,Noeud>::iterator it_map;
   vector<string> dependances = noeud.get_links();
   static vector<int> tab_data_operation;
+  tab_data_operation.clear();
+
   for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
+
     it_map = noeud_map.find(*it);
+
     if(( (it_map->second).get_valeur() ) > 1){
       fonction_recursive((it_map->second), noeud_map);
     }else{
       tab_data_operation.push_back((it_map->second).get_valeur( ));
     }
+
     switch ( (it_map->second).get_type() ) {
       case AND2:
-        // cout << "AND2 result : " << endl;
-        // cout << "tab[0] : " << tab_data_operation[0] <<  "tab[1] : " << tab_data_operation[1];
         (it_map->second).set_logic_state(tab_data_operation[0] & tab_data_operation[1]);
         tab_data_operation.clear();
         tab_data_operation.push_back((it_map->second).get_valeur( ));

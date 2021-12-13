@@ -33,7 +33,7 @@ static Noeud create_a_noeud(string name, string type);
 
 map<string,Noeud> parser(vector<Symbole> &symbole_vector){
 
-    bool decoupage_ok = parser_decoupage(symbole_vector); // Le Parser_Decoupage recupere un vecteur de symboles
+    //bool decoupage_ok = parser_decoupage(symbole_vector); // Le Parser_Decoupage recupere un vecteur de symboles
                                                           // On doit verifier l'ordre
                                                           // On parcoure ce vecteur pour verifier l'ordre des symboles
 
@@ -49,12 +49,12 @@ map<string,Noeud> parser(vector<Symbole> &symbole_vector){
 
     map<string, Noeud>  noeud_vector = parser_structure(symbole_vector);
 
-    for(map<string, Noeud>::iterator it = noeud_vector.begin(); it != noeud_vector.end(); ++it) {
-      Noeud noeud = it->second;
-      cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : ";
-      noeud.print_link();
-      cout << endl;
-    }
+    // for(map<string, Noeud>::iterator it = noeud_vector.begin(); it != noeud_vector.end(); ++it) {
+    //   Noeud noeud = it->second;
+    //   cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : ";
+    //   noeud.print_link();
+    //   cout << endl;
+    // }
 
     /* regarder l'identifiant a été répertorier
       si oui alors regarder son origine
@@ -89,8 +89,8 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
                 break;
 
               case OLD_IDENTIFIANT :
-                cout << (*it1).get_valeur() <<endl;
-                next_state = (is_it_a_declaration((*(it1+5)).get_nature()) == true) ? FINISHED : ADD_LINK;
+                // next_state = (is_it_a_declaration((*(it1+5)).get_nature()) == true) ? FINISHED : ADD_LINK;
+                next_state = ADD_LINK;
               break;
               case ADD_LINK :
                 it = noeud_map.find((*it1).get_valeur());
@@ -104,7 +104,7 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
 
                   case OUTPUT :
                   (it->second).add_link_to_previous_noeud((*(it1-3)).get_valeur());
-                  //cout << "ici OUTPUT"<< (*(it1-3)).get_valeur() << endl;
+                  // cout << "ici OUTPUT"<< (*(it1-3)).get_valeur() << endl;
                   next_state = FINISHED;
                   break;
 
