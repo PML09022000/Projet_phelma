@@ -9,42 +9,50 @@ using namespace std;
 
 
 
-Noeud::Noeud(string nom1, string type1, int nb, bool val1): nom(nom1), type(type1), nb_inout(nb),valeur(val1)  // liste d'initialisation
+Noeud::Noeud(string nom1, TYPE_enum type1, int nb): m_nom(nom1), m_type(type1), m_nb_inout(nb) // liste d'initialisation
 {
-  std::cout << "Construction of class Noeud"<< std::endl;
+  //std::cout << "Construction of class Noeud"<< std::endl;
 }
 
 Noeud::~Noeud()
 {
 
-cout<< "Destruction of class Noeud"<< std::endl;
+//cout<< "Destruction of class Noeud"<< std::endl;
 }
 
 // Accesseurs
 
 string Noeud::  get_nom() const {
-  return this-> nom;
+  return this-> m_nom;
 }
 bool Noeud:: get_valeur()const{
-   return this-> valeur;
+   return this-> m_valeur;
 }
 
 
 int Noeud::get_nb_inout() const{
-  return this-> nb_inout;
+  return this-> m_nb_inout;
 }
 
 
-string Noeud::get_type() const{
-  return this-> type;
+TYPE_enum Noeud::get_type() const{
+  return this-> m_type;
+}
+
+string Noeud:: get_link() const {
+  return m_noeud_noms_pre[0];
 }
 
 ////////////////////////////////////////:
 
 void Noeud::set_nom(string name){
-  this->nom=name;
+  this->m_nom=name;
 }
 
 void Noeud::set_logic_state (bool val){
-   this-> valeur=val;
+   this-> m_valeur=val;
+}
+
+void Noeud::add_link_to_previous_noeud (string m_nom){
+   m_noeud_noms_pre.push_back(m_nom);
 }
