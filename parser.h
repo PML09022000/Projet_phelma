@@ -2,7 +2,12 @@
 #define _PARSER_H_
 
 #include "symbole.h"
+#include "Noeud.h"
 
-void parser(vector<Symbole> &symbole_vector);
+#include <string>
+#include <map>
+
+
+map<string, Noeud> parser(vector<Symbole> &symbole_vector);
 
 #endif

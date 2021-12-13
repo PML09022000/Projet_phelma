@@ -12,6 +12,13 @@
 
 using namespace std;
 
+fonction_recursive(Noeud noeud){
+  vector<string> dependances = get_links(noeud);
+  for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
+    it = noeud_map.find((*it1).get_valeur());
+  }
+}
+
 int resultat Simulateur(map<string, Noeud>  noeud_vector)
 {
 

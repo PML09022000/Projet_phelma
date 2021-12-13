@@ -5,7 +5,6 @@ I2 [ label = "INPUT" ];
 I3 [ label = "INPUT" ];
 
 MY_AND [label = "AND2" ];
-MY_AND [label = "AND2" ];
 MY_XOR [label = "XOR2" ];
 
 O1 [label = "OUTPUT"];

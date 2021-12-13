@@ -4,8 +4,11 @@
 #define _SIMULATEUR_H_
 
 #include "Noeud.h"
+#include <map>
 
-int resultat Simulateur( map<string,Noeud> noeud_vector);
+static map<string, Noeud>  static_noeud_map;
+
+//int resultat Simulateur( map<string,Noeud> noeud_vector);
 
 
 #endif
