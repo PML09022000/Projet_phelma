@@ -11,8 +11,8 @@ enum TYPE_enum{
   INPUT,
   OUTPUT,
   NOT,
-  AND2,
-  XOR2,
+  ANDX,
+  XORX,
   OTHER,
 };
 

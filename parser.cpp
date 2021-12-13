@@ -159,13 +159,18 @@ Noeud create_a_noeud(string str_name, string str_type){
     return new_noeud;
   }
   if(str_type == "AND2"){
-    Noeud new_noeud(str_name, AND2, 2);
+    Noeud new_noeud(str_name, ANDX, 2);
     return new_noeud;
   }
   if(str_type == "XOR2"){
-    Noeud new_noeud(str_name, XOR2, 2);
+    Noeud new_noeud(str_name, XORX, 2);
     return new_noeud;
-  }else{
+  }
+  if(str_type == "XOR3"){
+    Noeud new_noeud(str_name, XORX, 3);
+    return new_noeud;
+  }
+  else{
     Noeud default_n(str_name, OTHER, 0);
     return default_n;
   }

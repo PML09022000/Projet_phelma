@@ -30,7 +30,7 @@ vector<Symbole> lexeme(vector<string> &txt_line_vector){
           i++;
         }
         //check si keyword
-        if(token == "label" || token == "digraph" || token == "INPUT" || token == "OUTPUT" || token == "AND2" || token == "XOR2"){
+        if(token == "label" || token == "digraph" || token == "INPUT" || token == "OUTPUT" || token == "AND2" || token == "XOR2" || token == "XOR3"){
           Symbole S(mot_clef, token, it - txt_line_vector.begin() + 1);
           symbole_vector.push_back(S);
         }else{

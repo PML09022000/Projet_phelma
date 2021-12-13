@@ -13,6 +13,36 @@
 using namespace std;
 
 
+static int andX_result(vector<int> tab_data_operation){
+  int result = 1;
+  for(std::vector<int>::iterator it = tab_data_operation.begin(); it != tab_data_operation.end(); ++it){
+    result &= *it;
+  }
+  return result;
+}
+
+static int xorX_result(vector<int> tab_data_operation){
+  int result;
+  for(std::vector<int>::iterator it = (tab_data_operation.begin()+1); it != tab_data_operation.end(); ++it){
+    *it = (*it) ^ (*(it-1));
+    result = *it;
+  }
+  return result;
+}
+
+static int orX_result(vector<int> tab_data_operation){
+  int result = 1;
+  for(std::vector<int>::iterator it = tab_data_operation.begin(); it != tab_data_operation.end(); ++it){
+    result |= *it;
+  }
+  return result;
+}
+
+static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
+  tab_data_operation.clear();
+  tab_data_operation.push_back(maj_data);
+}
+
 void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 
   std::map<string,Noeud>::iterator it_map;
@@ -31,17 +61,15 @@ void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
     }
 
     switch ( (it_map->second).get_type() ) {
-      case AND2:
-        (it_map->second).set_logic_state(tab_data_operation[0] & tab_data_operation[1]);
-        tab_data_operation.clear();
-        tab_data_operation.push_back((it_map->second).get_valeur( ));
+      case ANDX:
+        (it_map->second).set_logic_state(andX_result(tab_data_operation));
+        maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
         cout << "AND2 result : " <<(it_map->second).get_valeur( ) << endl;
         break;
 
-      case XOR2:
-        (it_map->second).set_logic_state(tab_data_operation[0] ^ tab_data_operation[1]);
-        tab_data_operation.clear();
-        tab_data_operation.push_back((it_map->second).get_valeur( ));
+      case XORX:
+        (it_map->second).set_logic_state(xorX_result(tab_data_operation));
+        maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
         cout << "XOR2 result : " <<(it_map->second).get_valeur( ) << endl;
         break;
 
@@ -51,6 +79,7 @@ void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
   }
   noeud.set_logic_state(tab_data_operation[0]);
 }
+
 
 int Simulateur(map<string, Noeud> noeud_map)
 {

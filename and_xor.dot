@@ -9,6 +9,8 @@ MY_XOR [label = "XOR2" ];
 MY_AND2 [label = "AND2" ];
 MY_XOR2 [label = "XOR2" ];
 SS [label = "OUTPUT"];
+MY_XOR3 [label = "XOR3" ];
+Ss [label = "OUTPUT"];
 
 O1 [label = "OUTPUT"];
 
@@ -20,4 +22,8 @@ I3 -> MY_XOR-> O1;
 I1 -> MY_XOR2 -> MY_AND2;
 I2 -> MY_XOR2;
 I3 -> MY_AND2 -> SS;
+
+I1 -> MY_XOR3;
+I2 -> MY_XOR3;
+I3 -> MY_XOR3 -> Ss:
 }
