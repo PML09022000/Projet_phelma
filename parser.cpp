@@ -34,8 +34,8 @@ static bool parser_decoupage(vector<Symbole> &symbole_vector);
 static map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector);
 
 // Parser de json
-static bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json);
-static map<string,vector<int> &symbole_valeur > parser_json(vector<Symbole_json> &symbole_vector_json);
+// static bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json);
+// static map<string,vector<int> &symbole_valeur > parser_json(vector<Symbole_json> &symbole_vector_json);
 
 
 static bool is_new(string current_identifiant, map<string, Noeud> noeud_map){
@@ -464,349 +464,350 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
         cout << "Nb errors " << count<<'\n';
         }
       }
-
-      enum PARSER_JSON_FSM{
-        START,
-          MOT_CLEF,
-          S1,
-          S2,
-          S3,
-          S4,
-          IDENTIFIANT,
-          S7,
-          S8,
-          TAB_VALEUR,
-          S9,
-          S10,
-          S11,
-          S12,
-          S13,
-        FINISHED,
-        ERROR
-      }
-
-     bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
-     {
-       int count= 0;
-       // Compteur qui va etre à 0 si pas d'erreurs
-       // Valeur de compteur differente de 0 si'il y a des erreurs
-       int line_index_error=0;
-       // Ligne ou on constate l'erreur
-
-       std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
-       // it est un iterateur qui pointe sur chaque symbole du vecteur
-
-       while(it!= symbole_vector_json.end()){
-
-            VERIFICATION_DECOUPAGE_FSM_STATES next_state = START;
-
-       while (next_state != FINISHED){
-
-             switch (next_state){
-               /////////////////////
-                 case START:
-                 // On verifie que le premier mot du vecteur est bien {, sinon erreur
-                   if((*it).get_valeur()!= "{")
-                   {
-                     count++;
-                     cout << "Error found on line:  " << symbole_vector_json[0].get_line_index()<<'\n';
-                     next_state=ERROR;
-                   }
-                   else{
-                      it++;
-                      next_state= MOT_CLEF;
-                          }
-                      break;
-
-                   case MOT_CLEF :
-
-                       // On verifie que ce qui suit est bien mot_clef, sinon erreur
-
-                        if( (*it).get_nature()== mot_clef )
-                        {
-
-                          next_state=S2;
-
-                          }
-                        if( (*it).get_valeur()== "}" )
-                          {
-
-                            next_state=START;
-
-                            }
-                          else{
-                              count++;
-                              line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                                    }
-                              it++;
-                            break;
-
-               /////////////////////
-                   case S2 :
-                   //ce qui suit  le mot_clef doit etre un :, sinon erreur
-                          if( (*it).get_valeur()!= ":" )
-                          {
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                                     }
-                              else{
-                                 it++;
-                                next_state=S3;}
-                                break;
-
-                   case S3:
-                   // ce qui suit : doit etre un[ ou ", sinon erreur
-                          if( (*it).get_valeur()=="[" )
-                          { next_state=MOT_CLEF;}
-
-
-                          else if((*it).get_valeur()=="'" )
-                          {
-                            next_state=IDENTIFIANT;
-                          }
-
-                          else{
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                        next_state=ERROR;
-                          }
-
-                          it++;
-
-                         break;
-
-                   case IDENTIFIANT:
-                            if( (*it).get_nature()!=identifiant )
-                             {
-                               next_state=ERROR;
-                               count++;
-                               line_index_error= (*it).get_line_index();
-                               cout << "Error found on line:  " <<line_index_error<<'\n';
-                             }
-
-                      else
-                             {
-                               next_state=S4;
-                              }
-                           it++;
-                           break;
-
-                   case S4:
-
-                     if( (*it).get_valeur()!="'" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-                        else
-                               {
-                                 next_state=S5;
-                                }
-                        it++;
-                         break;
-
-                   case S5:
-                     if( (*it).get_valeur()!="," )
-                            {
-                              count++;
-                                  line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                          next_state=ERROR;
-                            }
-                    else
-                          {
-                            next_state=S6;
-                          }
-                            it++;
-                             break;
-
-                   case S6:
-
-                     if(  ((*it).get_valeur()!= "wave" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-
-                    else
-                        {
-                          next_state=S7;
-                        }
-                        it++;
-                         break;
-
-                   case S7:
-
-                     if(  (*it).get_valeur()!= ":" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-                      else
-                            {
-                              next_state=S8;
-                            }
-
-                            it++;
-                             break;
-
-
-                   case S8: //
-
-                     if(  ((*it).get_valeur()!= "'" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                    cout << "Error found on line:  " <<line_index_error<<'\n';
-                                    next_state=ERROR;
-                        }
-
-                      else
-                            {
-                              next_state=TAB_VALEUR;
-                            }
-
-                            it++;
-                            break;
-
-                   case TAB_VALEUR: //
-
-                     if(  (*it).get_valeur()== "0"|| (*it).get_valeur()=="1" || (*it).get_valeur()== ".")
-                     {
-                       next_state=TAB_VALEUR;
-                     }
-
-                     else if (  (*it).get_valeur()== "'"){
-                       next_state=S9
-                     }
-
-                    else {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-                        it++;
-
-                        break;
-
-                   case S9: //
-
-                           if(  ((*it).get_valeur())== "}" )
-                                {
-                                  next_state=S10;
-                                }
-                          else{ next_state=ERROR;
-                                count++;
-                                line_index_error= (*it).get_line_index();
-                                cout << "Error found on line:  " <<line_index_error<<'\n';}
-
-                             it++;
-                             break;
-
-                   case S10://,
-                           if( (*it).get_valeur()!="," )
-                          {
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                          }
-
-                          else{ next_state= S11;
-                                }
-
-                             it++;
-                             break;
-
-                   case S11:
-                             if( (*it).get_valeur()!="}")
-                            {
-                              count++;
-                                  line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                         next_state=ERROR;
-                            }
-                            else{ next_state= S12;
-                                  }
-
-                             it++;
-                             break;
-
-                     case S12:
-                     // 2 possibilités à gerer
-                               if( (*it).get_valeur()=="]"   )
-                              {
-
-                                       next_state=S13;//
-                                     }
-
-                               else if( (*it).get_valeur()=="," )
-                                    {
-                                      next_state=START;
-                                    }
-                              }
-                              else
-                                   {
-                                     count++;
-                                     line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                                   }
-                             it++;
-                             break;
-
-                     case S13:
-                               if( (*it).get_valeur()=="}"  )
-                              {
-                                  next_state=FINISHED;
-                                  }
-
-
-
-                              else
-                                   {
-                                     count++;
-                                         line_index_error= (*it).get_line_index();
-                                                cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                                   }
-                             it++;
-                             break;
-
-                 case ERROR:
-
-                              next_state=FINISHED;
-                              it++;
-                              break;
-
-
-                  case FINISHED:
-                              cout<< "Verification finished " <<'\n';
-                              cout<< "Nb errors :"<< count<<endl;
-                                           break;
-
-                  default:   cout << "Unknown state" <<'\n';
-                     next_state=FINISHED;
-                     break;
-
-
-
-                       }// fermeture du case
-
-                   }// fermeture du while
-
-
-
-                 }// fermeture du while
+}
+     //
+     //  enum PARSER_JSON_FSM{
+     //    START,
+     //      MOT_CLEF,
+     //      S1,
+     //      S2,
+     //      S3,
+     //      S4,
+     //      IDENTIFIANT,
+     //      S7,
+     //      S8,
+     //      TAB_VALEUR,
+     //      S9,
+     //      S10,
+     //      S11,
+     //      S12,
+     //      S13,
+     //    FINISHED,
+     //    ERROR
+     //  }
+     //
+     // bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
+     // {
+     //   int count= 0;
+     //   // Compteur qui va etre à 0 si pas d'erreurs
+     //   // Valeur de compteur differente de 0 si'il y a des erreurs
+     //   int line_index_error=0;
+     //   // Ligne ou on constate l'erreur
+     //
+     //   std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
+     //   // it est un iterateur qui pointe sur chaque symbole du vecteur
+     //
+     //   while(it!= symbole_vector_json.end()){
+     //
+     //        VERIFICATION_DECOUPAGE_FSM_STATES next_state = START;
+     //
+     //   while (next_state != FINISHED){
+     //
+     //         switch (next_state){
+     //           /////////////////////
+     //             case START:
+     //             // On verifie que le premier mot du vecteur est bien {, sinon erreur
+     //               if((*it).get_valeur()!= "{")
+     //               {
+     //                 count++;
+     //                 cout << "Error found on line:  " << symbole_vector_json[0].get_line_index()<<'\n';
+     //                 next_state=ERROR;
+     //               }
+     //               else{
+     //                  it++;
+     //                  next_state= MOT_CLEF;
+     //                      }
+     //                  break;
+     //
+     //               case MOT_CLEF :
+     //
+     //                   // On verifie que ce qui suit est bien mot_clef, sinon erreur
+     //
+     //                    if( (*it).get_nature()== mot_clef )
+     //                    {
+     //
+     //                      next_state=S2;
+     //
+     //                      }
+     //                    if( (*it).get_valeur()== "}" )
+     //                      {
+     //
+     //                        next_state=START;
+     //
+     //                        }
+     //                      else{
+     //                          count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                          cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                   next_state=ERROR;
+     //                                }
+     //                          it++;
+     //                        break;
+     //
+     //           /////////////////////
+     //               case S2 :
+     //               //ce qui suit  le mot_clef doit etre un :, sinon erreur
+     //                      if( (*it).get_valeur()!= ":" )
+     //                      {
+     //                        count++;
+     //                            line_index_error= (*it).get_line_index();
+     //                                   cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                   next_state=ERROR;
+     //                                 }
+     //                          else{
+     //                             it++;
+     //                            next_state=S3;}
+     //                            break;
+     //
+     //               case S3:
+     //               // ce qui suit : doit etre un[ ou ", sinon erreur
+     //                      if( (*it).get_valeur()=="[" )
+     //                      { next_state=MOT_CLEF;}
+     //
+     //
+     //                      else if((*it).get_valeur()=="'" )
+     //                      {
+     //                        next_state=IDENTIFIANT;
+     //                      }
+     //
+     //                      else{
+     //                        count++;
+     //                            line_index_error= (*it).get_line_index();
+     //                                   cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                    next_state=ERROR;
+     //                      }
+     //
+     //                      it++;
+     //
+     //                     break;
+     //
+     //               case IDENTIFIANT:
+     //                        if( (*it).get_nature()!=identifiant )
+     //                         {
+     //                           next_state=ERROR;
+     //                           count++;
+     //                           line_index_error= (*it).get_line_index();
+     //                           cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                         }
+     //
+     //                  else
+     //                         {
+     //                           next_state=S4;
+     //                          }
+     //                       it++;
+     //                       break;
+     //
+     //               case S4:
+     //
+     //                 if( (*it).get_valeur()!="'" )
+     //                    {
+     //                      count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                                 cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                    }
+     //                    else
+     //                           {
+     //                             next_state=S5;
+     //                            }
+     //                    it++;
+     //                     break;
+     //
+     //               case S5:
+     //                 if( (*it).get_valeur()!="," )
+     //                        {
+     //                          count++;
+     //                              line_index_error= (*it).get_line_index();
+     //                                     cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                      next_state=ERROR;
+     //                        }
+     //                else
+     //                      {
+     //                        next_state=S6;
+     //                      }
+     //                        it++;
+     //                         break;
+     //
+     //               case S6:
+     //
+     //                 if(  ((*it).get_valeur()!= "wave" )
+     //                    {
+     //                      count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                                 cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                    }
+     //
+     //                else
+     //                    {
+     //                      next_state=S7;
+     //                    }
+     //                    it++;
+     //                     break;
+     //
+     //               case S7:
+     //
+     //                 if(  (*it).get_valeur()!= ":" )
+     //                    {
+     //                      count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                                 cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                    }
+     //                  else
+     //                        {
+     //                          next_state=S8;
+     //                        }
+     //
+     //                        it++;
+     //                         break;
+     //
+     //
+     //               case S8: //
+     //
+     //                 if(  ((*it).get_valeur()!= "'" )
+     //                    {
+     //                      count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                                cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                next_state=ERROR;
+     //                    }
+     //
+     //                  else
+     //                        {
+     //                          next_state=TAB_VALEUR;
+     //                        }
+     //
+     //                        it++;
+     //                        break;
+     //
+     //               case TAB_VALEUR: //
+     //
+     //                 if(  (*it).get_valeur()== "0"|| (*it).get_valeur()=="1" || (*it).get_valeur()== ".")
+     //                 {
+     //                   next_state=TAB_VALEUR;
+     //                 }
+     //
+     //                 else if (  (*it).get_valeur()== "'"){
+     //                   next_state=S9
+     //                 }
+     //
+     //                else {
+     //                      count++;
+     //                          line_index_error= (*it).get_line_index();
+     //                                 cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                    }
+     //                    it++;
+     //
+     //                    break;
+     //
+     //               case S9: //
+     //
+     //                       if(  ((*it).get_valeur())== "}" )
+     //                            {
+     //                              next_state=S10;
+     //                            }
+     //                      else{ next_state=ERROR;
+     //                            count++;
+     //                            line_index_error= (*it).get_line_index();
+     //                            cout << "Error found on line:  " <<line_index_error<<'\n';}
+     //
+     //                         it++;
+     //                         break;
+     //
+     //               case S10://,
+     //                       if( (*it).get_valeur()!="," )
+     //                      {
+     //                        count++;
+     //                            line_index_error= (*it).get_line_index();
+     //                                   cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                   next_state=ERROR;
+     //                      }
+     //
+     //                      else{ next_state= S11;
+     //                            }
+     //
+     //                         it++;
+     //                         break;
+     //
+     //               case S11:
+     //                         if( (*it).get_valeur()!="}")
+     //                        {
+     //                          count++;
+     //                              line_index_error= (*it).get_line_index();
+     //                                     cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                     next_state=ERROR;
+     //                        }
+     //                        else{ next_state= S12;
+     //                              }
+     //
+     //                         it++;
+     //                         break;
+     //
+     //                 case S12:
+     //                 // 2 possibilités à gerer
+     //                           if( (*it).get_valeur()=="]"   )
+     //                          {
+     //
+     //                                   next_state=S13;//
+     //                                 }
+     //
+     //                           else if( (*it).get_valeur()=="," )
+     //                                {
+     //                                  next_state=START;
+     //                                }
+     //                          }
+     //                          else
+     //                               {
+     //                                 count++;
+     //                                 line_index_error= (*it).get_line_index();
+     //                                 cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                               }
+     //                         it++;
+     //                         break;
+     //
+     //                 case S13:
+     //                           if( (*it).get_valeur()=="}"  )
+     //                          {
+     //                              next_state=FINISHED;
+     //                              }
+     //
+     //
+     //
+     //                          else
+     //                               {
+     //                                 count++;
+     //                                     line_index_error= (*it).get_line_index();
+     //                                            cout << "Error found on line:  " <<line_index_error<<'\n';
+     //                                 next_state=ERROR;
+     //                               }
+     //                         it++;
+     //                         break;
+     //
+     //             case ERROR:
+     //
+     //                          next_state=FINISHED;
+     //                          it++;
+     //                          break;
+     //
+     //
+     //              case FINISHED:
+     //                          cout<< "Verification finished " <<'\n';
+     //                          cout<< "Nb errors :"<< count<<endl;
+     //                                       break;
+     //
+     //              default:   cout << "Unknown state" <<'\n';
+     //                 next_state=FINISHED;
+     //                 break;
+     //
+     //
+     //
+     //                   }// fermeture du case
+     //
+     //               }// fermeture du while
+     //
+     //
+     //
+     //             }// fermeture du while

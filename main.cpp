@@ -1,8 +1,6 @@
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
 #include <iterator>
 #include <algorithm>
 
@@ -13,6 +11,7 @@
 #include "file_to_string.h"
 #include "lexer.h"
 #include "parser.h"
+#include "matching.h"
 #include "Simulateur.h"
 
 
@@ -69,7 +68,7 @@ int main()
 
   cout << endl;
 
-  bool ret = parser_decoupage_json(symbole_vector_json);
+  //bool ret = parser_decoupage_json(symbole_vector_json);
 
   std::vector<Stimulus> stimulus_vector; // = la valeur de retour de la fonction parser_json... ...à compléter
 
@@ -81,6 +80,8 @@ int main()
 
 
   apply_stimulus(noeud_map, stimulus_vector);
+
+  std::cout << "DOT & JSON MATCHING FINISHED WITH SUCCES" << '\n';
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
   /////////////////// RUN SIMULATION BEGIN /////////////////
 
