@@ -43,7 +43,7 @@ static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
   tab_data_operation.push_back(maj_data);
 }
 
-void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
+static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 
   std::map<string,Noeud>::iterator it_map;
   vector<string> dependances = noeud.get_links();
@@ -92,7 +92,7 @@ int Simulateur(map<string, Noeud> noeud_map)
     }else{}
   }
 
-  cout << endl;  
+  cout << endl;
 
   for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
     if((it->second).get_type() == OUTPUT){
