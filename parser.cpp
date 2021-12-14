@@ -809,7 +809,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                /////////////////////
                  case START:
                  // On verifie que le premier mot du vecteur est bien {, sinon erreur
-                   if((*it).get_valeur()!= "digraph")
+                   if((*it).get_valeur()!= "{")
                    {
                      count++;
                      cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';}
