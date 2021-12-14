@@ -60,6 +60,42 @@ int main()
 
                 cout << endl;
 
+                ifstream fichier2("Inputs.json", ios::in);  // on ouvre le fichier en lecture
+
+                if(fichier2)  // si l'ouverture a réussi
+                {
+                        cout << "fichier ouvert !" << endl;
+
+                        std::vector<std::string> txt_line_vector_json;
+                        string line_json;
+                        while(getline(fichier2, line_json))  // tant que l'on peut mettre la ligne dans "contenu"
+                        {
+                                txt_line_vector_json.push_back(line_json);
+                        }
+
+                        fichier2.close();  // on ferme le fichier
+                        cout << "fichier fermé !" << endl;
+
+                        // Affichage Vector de lignes//
+                        cout << "\nLINES : " << endl;
+                        for(std::vector<string>::iterator it = txt_line_vector_json.begin(); it != txt_line_vector_json.end(); ++it) {
+                            cout << *it << endl;
+                        }
+
+                        std::vector<Symbole_json> symbole_vector_json = lexeme_json(txt_line_vector_json);
+
+                        // Affichage Vector de Symboles//
+                        cout << "\nLEXER FINISHED WITH SUCCES : " << endl;
+                        for(vector<Symbole_json>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end(); ++it) {
+                          Symbole_json symb = *it;
+                            cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
+                        }
+                        cout << endl;
+                  }else{ // sinon
+                        cerr << "Impossible d'ouvrir le fichier !" << endl;
+                  }
+
+
                 int resultat = Simulateur(noeud_map);
 
 

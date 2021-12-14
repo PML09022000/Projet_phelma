@@ -26,7 +26,7 @@ vector<Symbole> lexeme(vector<string> &txt_line_vector){
       token.clear();
       token.push_back(str[i]);
       //check si alphanum
-      if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || (str[i] >= '0' && str[i] <= '9') || str[i] == '_')
+      if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || str[i] == '_')
       {
         while((str[i+1] >= 'A' && str[i+1] <= 'Z') || (str[i+1] >= 'a' && str[i+1] <= 'z') || (str[i+1] >= '0' && str[i+1] <= '9') || str[i+1] == '_')
         {
@@ -72,6 +72,67 @@ vector<Symbole> lexeme(vector<string> &txt_line_vector){
 
 
 
+vector<Symbole_json> lexeme_json(vector<string> &txt_line_vector){
+
+  std::vector<Symbole_json> symbole_vector;
+  int cpt_error = 0;
+
+  for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it)
+  {
+    // cout << "<Ligne complete>" << *it<<endl;
+    string str=*it; //  ligne de notre tableau de lignes
+
+    string token;
+
+    for(int i = 0; i <= str.length(); i++)
+    {
+
+      token.clear();
+      token.push_back(str[i]);
+      //check si alphanum
+      if((str[i] >= 'A' && str[i] <= 'Z') || (str[i] >= 'a' && str[i] <= 'z') || str[i] == '_')
+      {
+        while((str[i+1] >= 'A' && str[i+1] <= 'Z') || (str[i+1] >= 'a' && str[i+1] <= 'z') || (str[i+1] >= '0' && str[i+1] <= '9') || str[i+1] == '_')
+        {
+          token.push_back(str[i+1]);
+          i++;
+        }
+        //check si keyword
+        if(token == "signal" || token == "wave" || token == "name"){
+          Symbole_json S(mot_clef_json, token, it - txt_line_vector.begin() + 1);
+          symbole_vector.push_back(S);
+        }else{
+          Symbole_json S(identifiant_json, token, it - txt_line_vector.begin() + 1);
+          symbole_vector.push_back(S);
+        }
+      }
+      else
+      {//si pas alphanum
+         if(str[i]== '[' || str[i]== '{' || str[i] == ']' || str[i]== '}' || str[i]== ':' || str[i]== 39 || str[i]== ','){
+            Symbole_json S(ponctuation_json, token, it - txt_line_vector.begin() + 1);
+            symbole_vector.push_back(S);
+         }else{
+           if(str[i]== '0' || str[i]== '1' || str[i] == '.'){
+             Symbole_json S(valeur_numerique_json, token, it - txt_line_vector.begin() + 1);
+             symbole_vector.push_back(S);
+           }else{
+             if (str[i] != 0 && str[i] != ' '){
+               cpt_error ++;
+               cout << "Error lexer, unknown character " << str[i] << " at line " << it - txt_line_vector.begin() + 1 << endl;
+             }
+           }
+         }
+       }
+     }
+   }
+   if(cpt_error == 0){
+     return symbole_vector;
+   }else{
+     cout << "Nombre total d'erreurs : " << cpt_error << endl;
+     cout << "Prog killed in lexer.cpp"<< endl<< endl;
+     exit(-1);
+   }
+}
 
 
 
