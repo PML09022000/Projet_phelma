@@ -8,7 +8,7 @@
 
 using namespace std;
 
-vector<Symbole> lexeme(vector<string> &txt_line_vector){
+vector<Symbole> lexeme_dot(vector<string> &txt_line_vector){
 
   std::vector<Symbole> symbole_vector;
   int cpt_error = 0;

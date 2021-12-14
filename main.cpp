@@ -9,6 +9,7 @@
 #include "symbole.h"
 #include "Noeud.h"
 
+#include "file_to_string.h"
 #include "lexer.h"
 #include "parser.h"
 #include "Simulateur.h"
@@ -16,93 +17,65 @@
 
 int main()
 {
-        ifstream fichier("and_xor.dot", ios::in);  // on ouvre le fichier en lecture
+  //////////////////////  .DOT WORK //////////////////////
 
-        if(fichier)  // si l'ouverture a réussi
-        {
-                cout << "fichier ouvert !" << endl;
+  std::vector<std::string> dot_line_vector = file_to_string_vector("and_xor.dot");
+  // Affichage Vector de lignes//
+  cout << "\nFILE .DOT : " << endl;
+  for(std::vector<string>::iterator it = dot_line_vector.begin(); it != dot_line_vector.end(); ++it) {
+      cout << *it << endl;
+  }
 
-                std::vector<std::string> txt_line_vector;
-                string line;
-                while(getline(fichier, line))  // tant que l'on peut mettre la ligne dans "contenu"
-                {
-                        txt_line_vector.push_back(line);
-                }
+  cout << endl;
 
-                fichier.close();  // on ferme le fichier
-                cout << "fichier fermé !" << endl;
+  std::vector<Symbole> symbole_vector = lexeme_dot(dot_line_vector);
+  // Affichage Vector de Symboles//
+  cout << "\nLEXER .DOT FINISHED WITH SUCCES : " << endl;
+  for(vector<Symbole>::iterator it = symbole_vector.begin(); it != symbole_vector.end(); ++it) {
+      Symbole symb = *it;
+      cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
+  }
 
-                // Affichage Vector de lignes//
-                cout << "\nLINES : " << endl;
-                for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it) {
-                    cout << *it << endl;
-                }
+  cout << endl;
 
-                std::vector<Symbole> symbole_vector = lexeme(txt_line_vector);
+  map<string, Noeud> noeud_map = parser(symbole_vector);
+  // Affichage Map de Noeud//
+  cout << "\nPARSING FINISHED WITH SUCCES : " << endl;
+  for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it){
+      Noeud noeud = it->second;
+      cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : "; noeud.print_link(); cout << endl;
+  }
 
-                // Affichage Vector de Symboles//
-                cout << "\nLEXER FINISHED WITH SUCCES : " << endl;
-                for(vector<Symbole>::iterator it = symbole_vector.begin(); it != symbole_vector.end(); ++it) {
-                  Symbole symb = *it;
-                    cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
-                }
-                cout << endl;
+  //////////////////////  .DOT WORK END //////////////////////
+  //////////////////////  .JSON WORK BEGIN //////////////////////
 
-                map<string, Noeud> noeud_map = parser(symbole_vector);
+  std::vector<std::string> json_line_vector = file_to_string_vector("Inputs.json");
+  // Affichage Vector de lignes//
+  cout << "\nFILE .JSON: " << endl;
+  for(std::vector<string>::iterator it = json_line_vector.begin(); it != json_line_vector.end(); ++it){
+      cout << *it << endl;
+  }
 
-                cout << "\nPARSING FINISHED WITH SUCCES : " << endl;
-                for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
-                  Noeud noeud = it->second;
-                  cout << "Nom : " << noeud.get_nom() << "\t\t\tType : " << noeud.get_type() << "\t\t\tNb_input : " << noeud.get_nb_inout()<< "\t\t\tLink : ";
-                  noeud.print_link();
-                  cout << endl;
-                }
+  cout << endl;
 
-                cout << endl;
+  std::vector<Symbole_json> symbole_vector_json = lexeme_json(json_line_vector);
+  // Affichage Vector de Symboles//
+  cout << "\nLEXER .JSON FINISHED WITH SUCCES : " << endl;
+  for(vector<Symbole_json>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end(); ++it) {
+      Symbole_json symb = *it;
+      cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
+  }
 
-                ifstream fichier2("Inputs.json", ios::in);  // on ouvre le fichier en lecture
+  cout << endl;
 
-                if(fichier2)  // si l'ouverture a réussi
-                {
-                        cout << "fichier ouvert !" << endl;
+  // à compléter
 
-                        std::vector<std::string> txt_line_vector_json;
-                        string line_json;
-                        while(getline(fichier2, line_json))  // tant que l'on peut mettre la ligne dans "contenu"
-                        {
-                                txt_line_vector_json.push_back(line_json);
-                        }
+  //////////////////////  .JSON WORK END /////////////////////
+  /////////////// MATCH BETWEEN .DOT AND .JSON BEGIN /////////
 
-                        fichier2.close();  // on ferme le fichier
-                        cout << "fichier fermé !" << endl;
+  /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
+  /////////////////// RUN SIMULATION BEGIN /////////////////
 
-                        // Affichage Vector de lignes//
-                        cout << "\nLINES : " << endl;
-                        for(std::vector<string>::iterator it = txt_line_vector_json.begin(); it != txt_line_vector_json.end(); ++it) {
-                            cout << *it << endl;
-                        }
-
-                        std::vector<Symbole_json> symbole_vector_json = lexeme_json(txt_line_vector_json);
-
-                        // Affichage Vector de Symboles//
-                        cout << "\nLEXER FINISHED WITH SUCCES : " << endl;
-                        for(vector<Symbole_json>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end(); ++it) {
-                          Symbole_json symb = *it;
-                            cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
-                        }
-                        cout << endl;
-                  }else{ // sinon
-                        cerr << "Impossible d'ouvrir le fichier !" << endl;
-                  }
-
-
-                int resultat = Simulateur(noeud_map);
-
-
-
-          }else { // sinon
-                cerr << "Impossible d'ouvrir le fichier !" << endl;
-          }
-
-          return 0;
+  /////////////////// RUN SIMULATION END /////////////////
+  return 0;
 }
