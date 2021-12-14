@@ -64,13 +64,13 @@ void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
       case ANDX:
         (it_map->second).set_logic_state(andX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "AND2 result : " <<(it_map->second).get_valeur( ) << endl;
+        cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
         break;
 
       case XORX:
         (it_map->second).set_logic_state(xorX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "XOR2 result : " <<(it_map->second).get_valeur( ) << endl;
+        cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
         break;
 
       default:
@@ -86,16 +86,18 @@ int Simulateur(map<string, Noeud> noeud_map)
   for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
     if((it->second).get_type() == INPUT){
       int boool = 0;
-      cout << "Valeur Input" << endl;
+      cout << "Valeur "<< (it->second).get_nom() << " = ";
       cin >> boool;
       (it->second).set_logic_state(boool);
     }else{}
   }
 
+  cout << endl;  
+
   for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
     if((it->second).get_type() == OUTPUT){
       fonction_recursive((it->second), noeud_map);
-      cout << "OUTPUT = " << (it->second).get_valeur() << endl;
+      cout << "OUTPUT " << (it->second).get_nom() << " = " << (it->second).get_valeur() << endl << endl;
     }else{}
   }
   return 0;

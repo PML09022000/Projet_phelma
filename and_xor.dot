@@ -4,26 +4,26 @@ I1 [ label = "INPUT" ];
 I2 [ label = "INPUT" ];
 I3 [ label = "INPUT" ];
 
-MY_AND [label = "AND2" ];
-MY_XOR [label = "XOR2" ];
-MY_AND2 [label = "AND2" ];
-MY_XOR2 [label = "XOR2" ];
-SS [label = "OUTPUT"];
-MY_XOR3 [label = "XOR3" ];
-Ss [label = "OUTPUT"];
+M1_AND [label = "AND2" ];
+M1_XOR [label = "XOR2" ];
+M2_AND [label = "AND2" ];
+M2_XOR [label = "XOR2" ];
+O2 [label = "OUTPUT"];
+M3_XOR [label = "XOR3" ];
+O3 [label = "OUTPUT"];
 
 O1 [label = "OUTPUT"];
 
-I1 -> MY_AND -> MY_XOR;
-I2 -> MY_AND;
-I3 -> MY_XOR-> O1;
+I1 -> M1_AND -> M1_XOR;
+I2 -> M1_AND;
+I3 -> M1_XOR-> O1;
 
 
-I1 -> MY_XOR2 -> MY_AND2;
-I2 -> MY_XOR2;
-I3 -> MY_AND2 -> SS;
+I1 -> M2_XOR -> M2_AND;
+I2 -> M2_XOR;
+I3 -> M2_AND -> O2;
 
-I1 -> MY_XOR3;
-I2 -> MY_XOR3;
-I3 -> MY_XOR3 -> Ss:
+I1 -> M3_XOR;
+I2 -> M3_XOR;
+I3 -> M3_XOR -> O3;
 }
