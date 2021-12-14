@@ -8,6 +8,7 @@
 
 #include "symbole.h"
 #include "Noeud.h"
+#include "stimulus.h"
 
 #include "file_to_string.h"
 #include "lexer.h"
@@ -68,11 +69,18 @@ int main()
 
   cout << endl;
 
-  // à compléter
+  bool ret = parser_decoupage_json(symbole_vector_json);
+
+  std::vector<Stimulus> stimulus_vector; // = la valeur de retour de la fonction parser_json... ...à compléter
 
   //////////////////////  .JSON WORK END /////////////////////
   /////////////// MATCH BETWEEN .DOT AND .JSON BEGIN /////////
+  Stimulus Sti1("I1") ; Sti1.add_valeur_stimulus(1); Sti1.add_valeur_stimulus(0); stimulus_vector.push_back(Sti1);
+  Stimulus Sti2("I2") ; Sti2.add_valeur_stimulus(1); Sti2.add_valeur_stimulus(1); stimulus_vector.push_back(Sti2);
+  Stimulus Sti3("I3") ; Sti3.add_valeur_stimulus(0); Sti3.add_valeur_stimulus(1); stimulus_vector.push_back(Sti3);
 
+
+  apply_stimulus(noeud_map, stimulus_vector);
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
   /////////////////// RUN SIMULATION BEGIN /////////////////
 
