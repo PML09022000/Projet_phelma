@@ -7,7 +7,6 @@
 using namespace std;
 
 enum TYPE_enum{
-  TITRE = 0,
   INPUT,
   OUTPUT,
   NOT,

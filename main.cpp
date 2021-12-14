@@ -46,6 +46,7 @@ int main()
                   Symbole symb = *it;
                     cout << "Nature_grammaticale : " << symb.get_nature() << "\t\t\tValeur : " << symb.get_valeur() << "\t\t\tLigne : " << symb.get_line_index()<< endl;
                 }
+                cout << endl;
 
                 map<string, Noeud> noeud_map = parser(symbole_vector);
 

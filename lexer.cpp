@@ -2,13 +2,17 @@
 #include <string>
 #include <vector>
 #include <iterator>
+#include <stdlib.h>
 
 #include "lexer.h"
 
 using namespace std;
 
 vector<Symbole> lexeme(vector<string> &txt_line_vector){
+
   std::vector<Symbole> symbole_vector;
+  int cpt_error = 0;
+
   for(std::vector<string>::iterator it = txt_line_vector.begin(); it != txt_line_vector.end(); ++it)
   {
     // cout << "<Ligne complete>" << *it<<endl;
@@ -48,14 +52,22 @@ vector<Symbole> lexeme(vector<string> &txt_line_vector){
              Symbole S(operateur, token, it - txt_line_vector.begin() + 1);
              symbole_vector.push_back(S);
            }else{
-             if (str[i] != 0 && str[i] != ' ')
-               cout << "erreur ! " << str[i] << it - txt_line_vector.begin() + 1 << endl;
+             if (str[i] != 0 && str[i] != ' '){
+               cpt_error ++;
+               cout << "Error lexer, unknown character " << str[i] << " at line " << it - txt_line_vector.begin() + 1 << endl;
+             }
            }
          }
        }
      }
    }
-   return symbole_vector;
+   if(cpt_error == 0){
+     return symbole_vector;
+   }else{
+     cout << "Nombre total d'erreurs : " << cpt_error << endl;
+     cout << "Prog killed in lexer.cpp"<< endl<< endl;
+     exit(-1);
+   }
 }
 
 
