@@ -32,12 +32,28 @@ enum CREATE_AND_COMPLETE_NOEUD_FSM_STATES{
   FINISHED,
 };
 
+// Verification decoupage fichier .dot
 static bool parser_decoupage(vector<Symbole> &symbole_vector);
+
+// Verification decoupage fichier .json
+static bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json);
+
+// Parser de .dot
 static map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector);
 
-// Parser de json
-// static bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json);
-// static map<string,vector<int> &symbole_valeur > parser_json(vector<Symbole_json> &symbole_vector_json);
+// Parser create stimulus  de json
+
+static vector <Stimulus >parser_create_stimulus_vector(vector<Symbole_json> &symbole_vector_json);
+
+
+// Fonction parser json qui appelle les 2 fct decopage et create stimulus
+vector <Stimulus >parser_json(vector<Symbole_json> &symbole_vector_json)
+{
+   bool ret=  parser_decoupage_json(symbole_vector_json);
+  vector <Stimulus> stimulus_vector= parser_create_stimulus_vector(symbole_vector_json);
+  return stimulus_vector;
+
+}
 
 
 static bool is_new(string current_identifiant, map<string, Noeud> noeud_map){
@@ -485,11 +501,13 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
           S9,
           S10,
           S11,
-          S12,
-          S13,
+        //  S12,
+        //  S13,
         FINISHED_JSON,
         ERROR,
       };
+
+
 
      bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
      {
@@ -502,7 +520,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
        std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
        // it est un iterateur qui pointe sur chaque symbole du vecteur
 
-       while(it!= symbole_vector_json.end()){
+       //while(it!= symbole_vector_json.end()){
 
             PARSER_JSON_FSM next_state = START;
 
@@ -519,6 +537,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                      next_state=ERROR;
                    }
                    else{
+
                       it++;
                       next_state= MOT_CLEF;
                           }
@@ -534,10 +553,10 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                           next_state=S2;
 
                           }
-                        if( (*it).get_valeur()== "}" )
+                        else if( (*it).get_valeur()== "}" ) //{}, cas de ligne vide à gerer
                           {
 
-                            next_state=START;
+                            next_state=S10;
 
                             }
                           else{
@@ -565,12 +584,12 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                                 break;
 
                    case S3:
-                   // ce qui suit : doit etre un[ ou ", sinon erreur
-                          if( (*it).get_valeur()=="[" )
-                          { next_state=MOT_CLEF;}
+                   // ce qui suit : doit etre un [ ou ' sinon erreur
+                          if( (*it).get_valeur()=="[" ) //    {signal: [
+                          { next_state=START;}
 
 
-                          else if((*it).get_valeur()=="'" )
+                          else if((*it).get_valeur()=="'" )  //{name: 'I1',
                           {
                             next_state=IDENTIFIANT;
                           }
@@ -587,7 +606,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                          break;
 
                    case IDENTIFIANT:
-                            if( (*it).get_nature()!=identifiant_json )
+                            if( (*it).get_nature()!=identifiant_json ) //{name: 'I1',
                              {
                                next_state=ERROR;
                                count++;
@@ -604,7 +623,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
 
                    case S4:
 
-                     if( (*it).get_valeur()!="'" )
+                     if( (*it).get_valeur()!="'" ) //{name: 'I1',
                         {
                           count++;
                               line_index_error= (*it).get_line_index();
@@ -619,7 +638,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                          break;
 
                    case S5:
-                     if( (*it).get_valeur()!="," )
+                     if( (*it).get_valeur()!="," ) //{name: 'I1',
                             {
                               count++;
                                   line_index_error= (*it).get_line_index();
@@ -713,6 +732,8 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                                 {
                                   next_state=S10;
                                 }
+
+
                           else{ next_state=ERROR;
                                 count++;
                                 line_index_error= (*it).get_line_index();
@@ -722,15 +743,18 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                              break;
 
                    case S10://,
-                           if( (*it).get_valeur()!="," )
-                          {
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                          }
+                           if( (*it).get_valeur()=="," )
+                          {next_state= START;}
 
-                          else{ next_state= S11;
+                          else if( (*it).get_valeur()=="]" )
+                               {next_state= S11;}
+
+
+                          else{
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
                                 }
 
                              it++;
@@ -744,62 +768,23 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                                          cout << "Error found on line:  " <<line_index_error<<'\n';
                                          next_state=ERROR;
                             }
-                            else{ next_state= S12;
+
+                            else{ next_state= FINISHED_JSON;
                                   }
 
-                             it++;
-                             break;
-
-                     case S12:
-                     // 2 possibilités à gerer
-                               if( (*it).get_valeur()=="]"   )
-                              {
-
-                                       next_state=S13;//
-                                     }
-
-                               else if( (*it).get_valeur()=="," )
-                                    {
-                                      next_state=START;
-                                    }
-
-                              else
-                                   {
-                                     count++;
-                                     line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                                   }
-                             it++;
-                             break;
-
-                     case S13:
-                               if( (*it).get_valeur()=="}"  )
-                              {
-                                  next_state=FINISHED_JSON;
-                                  }
-
-
-
-                              else
-                                   {
-                                     count++;
-                                         line_index_error= (*it).get_line_index();
-                                                cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                                   }
                              it++;
                              break;
 
                  case ERROR:
-
+                               cout<< " The error is: " <<(*(it-1)).get_valeur()<< endl;
                               next_state=FINISHED_JSON;
                               it++;
                               break;
 
 
                   case FINISHED_JSON:
-                              cout<< "Verification finished " <<'\n';
+                              //cout<< "Verification finished !! " <<'\n';
+
 
                                            break;
 
@@ -811,8 +796,48 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
 
                        }// fermeture du case
 
-                   }// fermeture du while
+                  // }// fermeture du while
 
                  }// fermeture du while
-                cout<< "Verification finished " <<'\n';
+                cout<< "Verification finished !! " <<'\n';
+                cout<< "Number of errors: " <<count<<'\n';
               }
+
+
+              // case S12:
+              // // 2 possibilités à gerer
+              //           if( (*it).get_valeur()=="]"   )
+              //          {
+              //
+              //                   next_state=S13;//
+              //                 }
+              //
+              //           else if( (*it).get_valeur()=="," )
+              //                {
+              //                  next_state=START;
+              //                }
+              //
+              //          else
+              //               {
+              //                 count++;
+              //                 line_index_error= (*it).get_line_index();
+              //                 cout << "Error found on line:  " <<line_index_error<<'\n';
+              //                 next_state=ERROR;
+              //               }
+              //         it++;
+              //         break;
+
+              // case S13:
+              //           if( (*it).get_valeur()=="}"  )
+              //          {
+              //              next_state=FINISHED_JSON;
+              //              }
+                      //  else
+                      //       {
+                      //         count++;
+                      //             line_index_error= (*it).get_line_index();
+                      //                    cout << "Error found on line:  " <<line_index_error<<'\n';
+                      //         next_state=ERROR;
+                      //       }
+                      // it++;
+                      // break;
