@@ -13,9 +13,12 @@ string Stimulus::get_nom(){
   return m_nom;
 }
 
+int Stimulus::get_stimulus_size(){
+  return m_valeur_stimulus.size();
+}
 
-vector<int> Stimulus::get_valeur_stimulus(){
-  return m_valeur_stimulus;
+int Stimulus::get_valeur_stimulus_at_index(int const index){
+  return m_valeur_stimulus[index];
 }
 
 

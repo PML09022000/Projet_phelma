@@ -12,6 +12,16 @@
 
 using namespace std;
 
+enum SUMULATOR_FSM_STATE{
+  CHECK_INDEX_IN_STMULUS_VECTOR,
+  REINITIALIZE_NOEUDS_VALUES,
+  APPLY_INDEX_STIMULUS_VALUES_TO_INPUT,
+  CALCULATE_OUTPUTS,
+  NEXT_INDEX,
+
+  SIMULATION_END,
+};
+
 
 static int andX_result(vector<int> tab_data_operation){
   int result = 1;
@@ -80,73 +90,93 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
   noeud.set_logic_state(tab_data_operation[0]);
 }
 
-
-int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
-{
-  for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
-    if((it->second).get_type() == INPUT){
-      int boool = 0;
-      cout << "Valeur "<< (it->second).get_nom() << " = ";
-      cin >> boool;
-      (it->second).set_logic_state(boool);
-    }else{}
+static bool can_we_apply_stimu_at_index(vector<Stimulus> stimulus_vector, int index){
+  for(vector<Stimulus>::iterator it = stimulus_vector.begin(); it != stimulus_vector.end(); ++it){
+    if((*it).get_stimulus_size() < (index+1)){
+      return false;
+    }
   }
+  return true;
+}
 
-  cout << endl;
+static void apply_stimulus(map<string, Noeud> &noeud_map, vector<Stimulus> stimulus_vector, int index){
+  std::map<string,Noeud>::iterator it_map;
+  for(vector<Stimulus>::iterator it = stimulus_vector.begin(); it != stimulus_vector.end(); ++it){
+    it_map = noeud_map.find((*it).get_nom());
+    int stimu = (*it).get_valeur_stimulus_at_index(index);
+    (it_map->second).set_logic_state(stimu);
+  }
+}
 
+static void init_noeuds_values(map<string, Noeud> &noeud_map){
+  for(map<string, Noeud>::iterator it_map = noeud_map.begin(); it_map != noeud_map.end(); ++it_map) {
+    (it_map->second).set_logic_state(2);
+  }
+}
+
+static void calculate_outputs(map<string, Noeud> &noeud_map){
   for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
     if((it->second).get_type() == OUTPUT){
       fonction_recursive((it->second), noeud_map);
       cout << "OUTPUT " << (it->second).get_nom() << " = " << (it->second).get_valeur() << endl << endl;
     }else{}
   }
+}
+
+
+int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
+{
+  // for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
+  //   if((it->second).get_type() == INPUT){
+  //     int boool = 0;
+  //     cout << "Valeur "<< (it->second).get_nom() << " = ";
+  //     cin >> boool;
+  //     (it->second).set_logic_state(boool);
+  //   }else{}
+  // }
+
+  int index = 0;
+  SUMULATOR_FSM_STATE next_state = APPLY_INDEX_STIMULUS_VALUES_TO_INPUT;
+
+  while(next_state != SIMULATION_END){
+    switch(next_state){
+      case CHECK_INDEX_IN_STMULUS_VECTOR :
+        next_state = (can_we_apply_stimu_at_index(stimulus_vector, index) == true) ? REINITIALIZE_NOEUDS_VALUES : SIMULATION_END;
+        break;
+
+      case REINITIALIZE_NOEUDS_VALUES :
+        init_noeuds_values(noeud_map);
+        next_state = APPLY_INDEX_STIMULUS_VALUES_TO_INPUT;
+        break;
+
+      case APPLY_INDEX_STIMULUS_VALUES_TO_INPUT :
+        apply_stimulus(noeud_map, stimulus_vector, index);
+        next_state = CALCULATE_OUTPUTS;
+        break;
+
+      case CALCULATE_OUTPUTS :
+        calculate_outputs(noeud_map);
+        next_state = NEXT_INDEX;
+        break;
+
+      case NEXT_INDEX:
+        index ++;
+        next_state = CHECK_INDEX_IN_STMULUS_VECTOR;
+        break;
+
+      case SIMULATION_END :
+      break;
+
+      default:
+        next_state = SIMULATION_END;
+        break;
+      break;
+    }
+  }
+
+  cout << endl;
+
+
   return 0;
 
-//  it = static_noeud_map.find();
-//
-//
-// //   // Cette fonction recupere un map de Noeuds par le parser et renvoie le resultat de la simulation
-//
-// //   // On lit chaque noeud
-// //   // If get_type = input               val logique get.valeur()== 0  ou 1
-// //   // If get_type = output              val logique inconnue get.valeur()==2
-// //   // If get_type = other               val logique inconnue get.valeur()==2
-//
-//
-// std::map<string,Noeud>::iterator it; // it qui va parcourir la map
-//
-// for(map<string, Noeud>::iterator it = noeud_vector.begin(); it != noeud_vector.end(); ++it) {
-//
-//   Noeud noeud = it->second;  // Dans la map: first c'est l'identifiant du noeud, second c'est le noeud
-//
-//   if ( noeud.get_type()==OUTPUT && noeud.get_valeur()==2) {
-//     // Si on ne connait pas la val logique de l'output, il faudrait la calculer
-//   // On parcoure le vecteur des noms des precedents et on cherche chacun dans la map
-//
-//     for(std::vector<Noeud>::iterator it = (noeud.get_links()).begin(); it != (noeud.get_links()).end(); ++it)
-//     {
-//       //On recupere les dependances
-//       // chaque it pointe sur un string
-//
-//       im = noeud_map.find((*it);
-//       //
-//       for(map<string, Noeud>::iterator im = noeud_vector.begin(); im != noeud_vector.end(); ++im) {
-//         // On reparcoure la map pour chercher
-//
-//         Noeud noeud = it->second;  // Dans la map: first c'est l'identifiant du noeud, second c'est le noeud
-//
-//
-//
-
-    }
-
-
-
-// std::map<string,Noeud>::iterator it = noeud_map.find(current_identifiant);
-// if (it != noeud_map.end())
-//   return false;
-// else
-//   return true;
-// }
-
-//   // Ensuite on recupere les identifiants des noeuds qui le precedent   get_link()
+}

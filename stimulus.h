@@ -17,7 +17,8 @@ class Stimulus{
     ~Stimulus();
 
     string get_nom();
-    vector<int> get_valeur_stimulus();
+    int get_stimulus_size();
+    int get_valeur_stimulus_at_index(int const index);
 
     void add_valeur_stimulus(int sti);
 };
