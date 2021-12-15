@@ -81,7 +81,7 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
   for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
 
     it_map = noeud_map.find(*it);
-    cout << (it_map->second).get_nom() << " est une dependance de " << noeud.get_nom() << ", valeur :" <<(it_map->second).get_valeur() << endl;
+    cout << (it_map->second).get_nom() << " apply to " << noeud.get_nom() << ", valeur :" <<(it_map->second).get_valeur() << endl;
 
   }
 
@@ -89,28 +89,29 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
       case ANDX:
         noeud.set_logic_state(andX_result(tab_data_operation));
         //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "AND" << noeud.get_nb_inout( ) << " result : " <<noeud.get_valeur( ) << endl;
+        // cout << "AND" << noeud.get_nb_inout( ) << " result : " <<noeud.get_valeur( ) << endl;
         break;
 
       case XORX:
         noeud.set_logic_state(xorX_result(tab_data_operation));
         //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "XOR" << noeud.get_nb_inout( ) << " result : "<< noeud.get_valeur( ) << endl;
+        // cout << "XOR" << noeud.get_nb_inout( ) << " result : "<< noeud.get_valeur( ) << endl;
         break;
 
       case MUXX:
         noeud.set_logic_state(mux2_result(tab_data_operation));
         //maj_tab_data(tab_data_operation, noeud.get_valeur());
-        cout << "MUX" << noeud.get_nb_inout( ) -1 << " result : "<< noeud.get_valeur( ) << endl;
+        // cout << "MUX" << noeud.get_nb_inout( ) -1 << " result : "<< noeud.get_valeur( ) << endl;
         break;
 
       case OUTPUT:
         noeud.set_logic_state((it_map->second).get_valeur());
-        cout << "OUTPUT result : "<< noeud.get_valeur( ) << endl;
+        // cout << "OUTPUT result : "<< noeud.get_valeur( ) << endl;
 
       default:
         break;
   }
+  cout << noeud.get_nom( ) << " result : "<< noeud.get_valeur( ) << endl;
 }
 
 static bool can_we_apply_stimu_at_index(vector<Stimulus> stimulus_vector, int index){
