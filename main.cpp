@@ -70,7 +70,7 @@ int main()
 
   //bool ret = parser_decoupage_json(symbole_vector_json);
 
-  std::vector<Stimulus> stimulus_vector = parser_json(symbole_vector_json);
+  std::vector<Stimulus> stimulus_vector; //= parser_json(symbole_vector_json);
 
   //////////////////////  .JSON WORK END /////////////////////
   Stimulus Sti1("I1") ; Sti1.add_valeur_stimulus(1); Sti1.add_valeur_stimulus(0); stimulus_vector.push_back(Sti1);
@@ -86,7 +86,7 @@ int main()
   /////////////////// RUN SIMULATION END /////////////////
 
   ////////////////// GENERATE OUTPUT JSON BEGIN ///////////////////////
-
+  
   ////////////////// GENERATE OUTPUT JSON END ///////////////////////
 
   return 0;
