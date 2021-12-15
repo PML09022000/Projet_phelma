@@ -34,8 +34,8 @@ vector<Symbole> lexeme_dot(vector<string> &txt_line_vector){
           i++;
         }
         //check si keyword
-        if(token == "label" || token == "digraph" || token == "INPUT" || token == "OUTPUT" || token == "AND2" ||
-        token == "XOR2" || token == "XOR3" || token == "MUX2" || token == "sel" || token == "NOT" || token == "NAND2" ){
+        if(token == "label" || token == "digraph" || token == "INPUT" || token == "OUTPUT" || token == "AND2" || token == "XOR2" || token == "XOR3" ||
+        token == "MUX2" || token == "sel" || token == "NOT" || token == "NAND2" || token == "NOR2" || token == "OR2" || token == "XNOR2"){
           Symbole S(mot_clef, token, it - txt_line_vector.begin() + 1);
           symbole_vector.push_back(S);
         }else{

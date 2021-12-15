@@ -125,6 +125,18 @@ static Noeud create_a_noeud(string str_name, string str_type){
     Noeud new_noeud(str_name, NANDX, 2);
     return new_noeud;
   }
+  if(str_type == "XNOR2"){
+    Noeud new_noeud(str_name, XNORX, 2);
+    return new_noeud;
+  }
+  if(str_type == "OR2"){
+    Noeud new_noeud(str_name, ORX, 2);
+    return new_noeud;
+  }
+  if(str_type == "NOR2"){
+    Noeud new_noeud(str_name, NORX, 2);
+    return new_noeud;
+  }
   if(str_type == "XOR2"){
     Noeud new_noeud(str_name, XORX, 2);
     return new_noeud;

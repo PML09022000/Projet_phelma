@@ -10,9 +10,15 @@ enum TYPE_enum{
   INPUT,
   OUTPUT,
   NOT,
+
   ANDX,
   NANDX,
+
+  ORX,
+  NORX,
   XORX,
+  XNORX,
+
   MUXX,
   OTHER,
 };

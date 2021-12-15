@@ -58,6 +58,18 @@ static int nandX_result(vector<int> tab_data_operation){
   return result;
 }
 
+static int norX_result(vector<int> tab_data_operation){
+  int result = orX_result(tab_data_operation);
+  result = not_result(result);
+  return result;
+}
+
+static int xnorX_result(vector<int> tab_data_operation){
+  int result = xorX_result(tab_data_operation);
+  result = not_result(result);
+  return result;
+}
+
 static int mux2_result(vector<int> tab_data_operation){
   if(tab_data_operation[0] == 0){
     return tab_data_operation[1];
@@ -101,6 +113,18 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 
       case XORX:
         noeud.set_logic_state(xorX_result(tab_data_operation));
+        break;
+
+      case ORX:
+        noeud.set_logic_state(orX_result(tab_data_operation));
+        break;
+
+      case XNORX:
+        noeud.set_logic_state(xnorX_result(tab_data_operation));
+        break;
+
+      case NORX:
+        noeud.set_logic_state(norX_result(tab_data_operation));
         break;
 
       case MUXX:
