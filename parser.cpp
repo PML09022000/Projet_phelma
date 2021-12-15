@@ -46,11 +46,11 @@ static map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector);
 static vector <Stimulus >parser_create_stimulus_vector(vector<Symbole_json> &symbole_vector_json);
 
 
-// Fonction parser json qui appelle les 2 fct decopage et create stimulus
-vector <Stimulus >parser_json(vector<Symbole_json> &symbole_vector_json)
+// Fonction parser json qui appelle les 2 fct decoupage et create stimulus
+vector <Stimulus> parser_json(vector<Symbole_json> &symbole_vector_json)
 {
    bool ret=  parser_decoupage_json(symbole_vector_json);
-  vector <Stimulus> stimulus_vector= parser_create_stimulus_vector(symbole_vector_json);
+  vector <Stimulus> stimulus_vector;//= parser_create_stimulus_vector(symbole_vector_json);
   return stimulus_vector;
 
 }
@@ -485,7 +485,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
     }
 
 
-      enum PARSER_JSON_FSM{
+enum PARSER_JSON_FSM{
         START,
           MOT_CLEF,
           S1,
@@ -508,8 +508,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
       };
 
 
-
-     bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
+bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
      {
        int count= 0;
        // Compteur qui va etre à 0 si pas d'erreurs
@@ -803,41 +802,48 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
                 cout<< "Number of errors: " <<count<<'\n';
               }
 
+enum FSM_STATES_CREATE_STIMULUS
+ { IS_NEW_CS,
+   FINISHED_CS,
+   ERASE,
+   CREATE,
+   ERROR_CS,
+ };
 
-              // case S12:
-              // // 2 possibilités à gerer
-              //           if( (*it).get_valeur()=="]"   )
-              //          {
-              //
-              //                   next_state=S13;//
-              //                 }
-              //
-              //           else if( (*it).get_valeur()=="," )
-              //                {
-              //                  next_state=START;
-              //                }
-              //
-              //          else
-              //               {
-              //                 count++;
-              //                 line_index_error= (*it).get_line_index();
-              //                 cout << "Error found on line:  " <<line_index_error<<'\n';
-              //                 next_state=ERROR;
-              //               }
-              //         it++;
-              //         break;
-
-              // case S13:
-              //           if( (*it).get_valeur()=="}"  )
-              //          {
-              //              next_state=FINISHED_JSON;
-              //              }
-                      //  else
-                      //       {
-                      //         count++;
-                      //             line_index_error= (*it).get_line_index();
-                      //                    cout << "Error found on line:  " <<line_index_error<<'\n';
-                      //         next_state=ERROR;
-                      //       }
-                      // it++;
-                      // break;
+// vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_vector_json)
+// {
+//   vector <Stimulus> stimulus_vector; // declaration de vecteur vide
+//   std::vector<Symbole_json>::iterator it;
+//   // it de type iterateur sur symbole_json
+//   int cpt_error = 0;
+// // On parcoure symbole vecteur json
+//   for(std::vector<Symbole>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end(); ++it){
+//
+//     if((*it).get_nature() == identifiant){
+//       FSM_STATES_CREATE_STIMULUS next_state = IS_NEW;
+//
+//       while (next_state != FINISHED_CS){
+//
+//           switch (next_state){
+//
+//             case IS_NEW :
+//              for(std::vector<Symbole>::iterator it2 = stimulus_vector.begin(); it2 != stimulus_vector.end(); ++it2){
+//                if((*it)==(*it2))
+//                   next_state =ERASE;
+//                else
+//                   next_state=ERROR_CS;supprime tout ce qui n'est pas identifiant ou valeur numerique
+//
+//               break;
+//
+//             case ERASE: // Dans cet etat on supprime tout ce qui n'est pas identifiant ou valeur numerique
+//               next_state=CREATE;
+//
+//               break;
+//
+//               case CREATE: // Dans cet etat on crée les stimulus
+//                 //next_state=;
+//
+//                 break;
+//
+//
+// }
