@@ -6,12 +6,13 @@ digraph test {
   M1_AND [label = "AND2" ];
   M1_XOR [label = "XOR2" ];
 
-  M1 [label = "MUX2" sel = "I3"];
+  M1 [label = "MUX2" sel = "M1_AND"];
   O1 [label = "OUTPUT"];
 
-  I1 -> M1_AND -> M1;
+  I1 -> M1_AND;
   I2 -> M1_AND;
 
   I1 -> M1_XOR -> M1 -> O1;
   I2 -> M1_XOR;
+  I3 -> M1;
 }

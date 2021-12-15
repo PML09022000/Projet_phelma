@@ -49,8 +49,6 @@ static int orX_result(vector<int> tab_data_operation){
 }
 
 static int mux2_result(vector<int> tab_data_operation){
-  cout << "sel = " << tab_data_operation[0] << endl;
-  cout << tab_data_operation[1] << "  " <<tab_data_operation[2] << endl;
   if(tab_data_operation[0] == 0){
     return tab_data_operation[1];
   }else{
@@ -58,46 +56,61 @@ static int mux2_result(vector<int> tab_data_operation){
   }
 }
 
-static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
-  tab_data_operation.clear();
-  tab_data_operation.push_back(maj_data);
-}
+// static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
+//   tab_data_operation.clear();
+//   tab_data_operation.push_back(maj_data);
+// }
 
 static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 
   std::map<string,Noeud>::iterator it_map;
   vector<string> dependances = noeud.get_links();
-  static vector<int> tab_data_operation;
+  vector<int> tab_data_operation;
   tab_data_operation.clear();
 
   for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
 
     it_map = noeud_map.find(*it);
-
     if(( (it_map->second).get_valeur() ) > 1){
       fonction_recursive((it_map->second), noeud_map);
     }else{
-      tab_data_operation.push_back((it_map->second).get_valeur( ));
     }
+    tab_data_operation.push_back((it_map->second).get_valeur( ));
+  }
 
-    switch ( (it_map->second).get_type() ) {
+  for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
+
+    it_map = noeud_map.find(*it);
+    cout << (it_map->second).get_nom() << " est une dependance de " << noeud.get_nom() << ", valeur :" <<(it_map->second).get_valeur() << endl;
+
+  }
+
+  switch ( noeud.get_type() ) {
       case ANDX:
-        (it_map->second).set_logic_state(andX_result(tab_data_operation));
-        maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
+        noeud.set_logic_state(andX_result(tab_data_operation));
+        //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
+        cout << "AND" << noeud.get_nb_inout( ) << " result : " <<noeud.get_valeur( ) << endl;
         break;
 
       case XORX:
-        (it_map->second).set_logic_state(xorX_result(tab_data_operation));
-        maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
+        noeud.set_logic_state(xorX_result(tab_data_operation));
+        //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
+        cout << "XOR" << noeud.get_nb_inout( ) << " result : "<< noeud.get_valeur( ) << endl;
         break;
+
+      case MUXX:
+        noeud.set_logic_state(mux2_result(tab_data_operation));
+        //maj_tab_data(tab_data_operation, noeud.get_valeur());
+        cout << "MUX" << noeud.get_nb_inout( ) -1 << " result : "<< noeud.get_valeur( ) << endl;
+        break;
+
+      case OUTPUT:
+        noeud.set_logic_state((it_map->second).get_valeur());
+        cout << "OUTPUT result : "<< noeud.get_valeur( ) << endl;
 
       default:
         break;
-    }
   }
-  noeud.set_logic_state(tab_data_operation[0]);
 }
 
 static bool can_we_apply_stimu_at_index(vector<Stimulus> stimulus_vector, int index){
@@ -152,6 +165,7 @@ vector<Stimulus> Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimu
     }
   }
 
+  int cpt_simulation_cycle = 0;
   int index = 0;
   SUMULATOR_FSM_STATE next_state = APPLY_INDEX_STIMULUS_VALUES_TO_INPUT;
 
@@ -173,6 +187,7 @@ vector<Stimulus> Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimu
 
       case CALCULATE_OUTPUTS :
         calculate_outputs(noeud_map, output_result_vector);
+        cout << "\nOutputs calculation cycle "<< ++cpt_simulation_cycle << " is over\n" << endl;
         next_state = NEXT_INDEX;
         break;
 
