@@ -13,6 +13,7 @@
 #include "parser.h"
 #include "matching.h"
 #include "Simulateur.h"
+#include "generate_output_json.h"
 
 
 int main()
@@ -79,15 +80,24 @@ int main()
   /////////////// MATCH BETWEEN .DOT AND .JSON BEGIN /////////
   matching(noeud_map, stimulus_vector);
   std::cout << "DOT & JSON MATCHING FINISHED WITH SUCCES" << '\n';
+  cout << endl;
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
 
   /////////////////// RUN SIMULATION BEGIN /////////////////
+  std::cout << "STARTING SIMULATION" << '\n';
   vector<Stimulus> output_result_vector = Simulateur(noeud_map, stimulus_vector);
+  std::cout << "SIMULATION FINISHED" << '\n';
+  cout << endl;
   /////////////////// RUN SIMULATION END /////////////////
 
   ////////////////// GENERATE OUTPUT JSON BEGIN ///////////////////////
-  
+  std::cout << "GENERATING OUTPUT .JSON" << '\n';
+  generate_output_json(output_result_vector);
+  std::cout << "OUTPUT .JSON GENERATED" << '\n';
+  cout << endl;
   ////////////////// GENERATE OUTPUT JSON END ///////////////////////
+
+  std::cout << "PROG TERMINATED WITH SUCCES" << '\n';
 
   return 0;
 }

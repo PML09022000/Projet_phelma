@@ -74,13 +74,13 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
       case ANDX:
         (it_map->second).set_logic_state(andX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
+        //cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
         break;
 
       case XORX:
         (it_map->second).set_logic_state(xorX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
+        //cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
         break;
 
       default:
@@ -118,7 +118,7 @@ static void calculate_outputs(map<string, Noeud> &noeud_map, vector<Stimulus> &o
   for(map<string, Noeud>::iterator it_map = noeud_map.begin(); it_map != noeud_map.end(); ++it_map) {
     if((it_map->second).get_type() == OUTPUT){
       fonction_recursive((it_map->second), noeud_map);
-      cout << "OUTPUT " << (it_map->second).get_nom() << " = " << (it_map->second).get_valeur() << endl << endl;
+      //cout << "OUTPUT " << (it_map->second).get_nom() << " = " << (it_map->second).get_valeur() << endl << endl;
       for(vector<Stimulus>::iterator it = output_result_vector.begin(); it != output_result_vector.end(); ++it){
         if((*it).get_nom() == (it_map->second).get_nom()){
           (*it).add_valeur_stimulus((it_map->second).get_valeur());

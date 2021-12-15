@@ -1,5 +1,5 @@
-#ifndef _FILETOSTRING_H_
-#define _FILETOSTRING_H_
+#ifndef _GENERATEOUTPUTJSON_H_
+#define _GENERATEOUTPUTJSON_H_
 
 #include <vector>
 #include "stimulus.h"
