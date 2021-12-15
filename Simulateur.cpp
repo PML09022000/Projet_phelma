@@ -48,6 +48,16 @@ static int orX_result(vector<int> tab_data_operation){
   return result;
 }
 
+static int mux2_result(vector<int> tab_data_operation){
+  cout << "sel = " << tab_data_operation[0] << endl;
+  cout << tab_data_operation[1] << "  " <<tab_data_operation[2] << endl;
+  if(tab_data_operation[0] == 0){
+    return tab_data_operation[1];
+  }else{
+    return tab_data_operation[2];
+  }
+}
+
 static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
   tab_data_operation.clear();
   tab_data_operation.push_back(maj_data);
@@ -74,13 +84,13 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
       case ANDX:
         (it_map->second).set_logic_state(andX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        //cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
+        cout << "AND" << (it_map->second).get_nb_inout( ) << " result : " <<(it_map->second).get_valeur( ) << endl;
         break;
 
       case XORX:
         (it_map->second).set_logic_state(xorX_result(tab_data_operation));
         maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        //cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
+        cout << "XOR" << (it_map->second).get_nb_inout( ) << " result : "<<(it_map->second).get_valeur( ) << endl;
         break;
 
       default:

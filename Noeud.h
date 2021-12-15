@@ -12,6 +12,7 @@ enum TYPE_enum{
   NOT,
   ANDX,
   XORX,
+  MUXX,
   OTHER,
 };
 
