@@ -114,26 +114,33 @@ static void init_noeuds_values(map<string, Noeud> &noeud_map){
   }
 }
 
-static void calculate_outputs(map<string, Noeud> &noeud_map){
-  for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
-    if((it->second).get_type() == OUTPUT){
-      fonction_recursive((it->second), noeud_map);
-      cout << "OUTPUT " << (it->second).get_nom() << " = " << (it->second).get_valeur() << endl << endl;
+static void calculate_outputs(map<string, Noeud> &noeud_map, vector<Stimulus> &output_result_vector){
+  for(map<string, Noeud>::iterator it_map = noeud_map.begin(); it_map != noeud_map.end(); ++it_map) {
+    if((it_map->second).get_type() == OUTPUT){
+      fonction_recursive((it_map->second), noeud_map);
+      cout << "OUTPUT " << (it_map->second).get_nom() << " = " << (it_map->second).get_valeur() << endl << endl;
+      for(vector<Stimulus>::iterator it = output_result_vector.begin(); it != output_result_vector.end(); ++it){
+        if((*it).get_nom() == (it_map->second).get_nom()){
+          (*it).add_valeur_stimulus((it_map->second).get_valeur());
+        }
+      }
     }else{}
   }
 }
 
 
-int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
+vector<Stimulus> Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
 {
-  // for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
-  //   if((it->second).get_type() == INPUT){
-  //     int boool = 0;
-  //     cout << "Valeur "<< (it->second).get_nom() << " = ";
-  //     cin >> boool;
-  //     (it->second).set_logic_state(boool);
-  //   }else{}
-  // }
+  vector<Stimulus> output_result_vector;
+
+  for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
+    if((it->second).get_type() == OUTPUT){
+      Stimulus Sti((it->second).get_nom());
+      output_result_vector.push_back(Sti);
+    }else{
+
+    }
+  }
 
   int index = 0;
   SUMULATOR_FSM_STATE next_state = APPLY_INDEX_STIMULUS_VALUES_TO_INPUT;
@@ -155,7 +162,7 @@ int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
         break;
 
       case CALCULATE_OUTPUTS :
-        calculate_outputs(noeud_map);
+        calculate_outputs(noeud_map, output_result_vector);
         next_state = NEXT_INDEX;
         break;
 
@@ -174,9 +181,6 @@ int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
     }
   }
 
-  cout << endl;
-
-
-  return 0;
+  return output_result_vector;
 
 }

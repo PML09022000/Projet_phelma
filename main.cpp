@@ -70,7 +70,7 @@ int main()
 
   //bool ret = parser_decoupage_json(symbole_vector_json);
 
-  std::vector<Stimulus> stimulus_vector; // = la valeur de retour de la fonction parser_json... ...à compléter
+  std::vector<Stimulus> stimulus_vector = parser_json(symbole_vector_json);
 
   //////////////////////  .JSON WORK END /////////////////////
   Stimulus Sti1("I1") ; Sti1.add_valeur_stimulus(1); Sti1.add_valeur_stimulus(0); stimulus_vector.push_back(Sti1);
@@ -80,8 +80,14 @@ int main()
   matching(noeud_map, stimulus_vector);
   std::cout << "DOT & JSON MATCHING FINISHED WITH SUCCES" << '\n';
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
+
   /////////////////// RUN SIMULATION BEGIN /////////////////
-  int output = Simulateur(noeud_map, stimulus_vector);
+  vector<Stimulus> output_result_vector = Simulateur(noeud_map, stimulus_vector);
   /////////////////// RUN SIMULATION END /////////////////
+
+  ////////////////// GENERATE OUTPUT JSON BEGIN ///////////////////////
+
+  ////////////////// GENERATE OUTPUT JSON END ///////////////////////
+
   return 0;
 }

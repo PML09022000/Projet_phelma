@@ -8,7 +8,7 @@
 #include "Noeud.h"
 #include "stimulus.h"
 
-int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector);
+vector<Stimulus> Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector);
 
 
 #endif
