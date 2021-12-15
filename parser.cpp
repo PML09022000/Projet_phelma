@@ -22,8 +22,10 @@ enum CREATE_AND_COMPLETE_NOEUD_FSM_STATES{
     IS_TITLE,
     NEW_IDENTIFIANT,
       NEW_NOEUD_TO_CREATE_AND_ADD_TO_VECTOR,
+      NEED_TO_ADD_SPECIAL_LINK_OR_NOT,
       ERROR_VARIABLE_UNDECLARED,
     OLD_IDENTIFIANT,
+      IS_IT_BETWEEN_COTE,
       ADD_LINK,
       ERROR_VARIABLE_LINKS_G,
       ERROR_VARIABLE_LINKS_INPUT,
@@ -49,8 +51,8 @@ static vector <Stimulus >parser_create_stimulus_vector(vector<Symbole_json> &sym
 // Fonction parser json qui appelle les 2 fct decoupage et create stimulus
 vector <Stimulus> parser_json(vector<Symbole_json> &symbole_vector_json)
 {
-   bool ret=  parser_decoupage_json(symbole_vector_json);
-  vector <Stimulus> stimulus_vector;//= parser_create_stimulus_vector(symbole_vector_json);
+  bool ret=  parser_decoupage_json(symbole_vector_json);
+  vector <Stimulus> stimulus_vector= parser_create_stimulus_vector(symbole_vector_json);
   return stimulus_vector;
 
 }
@@ -123,6 +125,10 @@ static Noeud create_a_noeud(string str_name, string str_type){
     Noeud new_noeud(str_name, XORX, 3);
     return new_noeud;
   }
+  if(str_type == "MUX2"){
+   Noeud new_noeud(str_name, MUXX, 2+1);
+   return new_noeud;
+ }
   else{
     Noeud default_n(str_name, OTHER, 0);
     return default_n;
@@ -190,12 +196,32 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
 
               case NEW_NOEUD_TO_CREATE_AND_ADD_TO_VECTOR :
                 noeud_map.insert (std::pair<string, Noeud>((*it1).get_valeur(),create_a_noeud((*it1).get_valeur(),(*(it1+5)).get_valeur())) );
+                next_state = NEED_TO_ADD_SPECIAL_LINK_OR_NOT;
+                break;
+
+              case NEED_TO_ADD_SPECIAL_LINK_OR_NOT :
+                if( (*(it1+7)).get_valeur() == "sel" && (*(it1+10)).get_nature() == identifiant ){
+                  it = noeud_map.find((*it1).get_valeur());
+                  (it->second).add_link_to_previous_noeud((*(it1+10)).get_valeur());
+                }else{
+
+                }
                 next_state = FINISHED;
+
                 break;
 
               case OLD_IDENTIFIANT :
                 next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : ERROR_VARIABLE_LINKS_G;
+                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : IS_IT_BETWEEN_COTE;
               break;
+
+              case IS_IT_BETWEEN_COTE:
+                if( (*(it1-1)).get_nature() == ponctuation && (*(it1+1)).get_nature() == ponctuation){
+                  next_state = FINISHED;
+                }else{
+                  next_state = ERROR_VARIABLE_LINKS_G;
+                }
+                break;
 
               case ADD_LINK :
                 it = noeud_map.find((*it1).get_valeur());
@@ -297,37 +323,31 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
   //       //Identifiant doit etre suivie de ponctuation [, ou   ou operateur -
 
 
-       if( (*it).get_nature()==identifiant )
-        {
-
-          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" )
+      if( (*it).get_nature()==identifiant ){
+          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" ){
           //Identifiant doit etre suivie par [ ou  ;
-          {
-            if ( (*(it+1)).get_valeur()== "-")
+
+            if ( (*(it+1)).get_valeur()== "-"){
              // Identifiant suivie par -
-            {
-              // on regarde par quoi il est precedé
-              if ( ((*(it-1)).get_valeur()==">" || (*(it-1)).get_valeur()==";") && ((*(it+2)).get_valeur()== ">" ))
-                {
-                  //pas d'erreur
-                  }
-              else {
+             // on regarde par quoi il est precedé
+              if ( ((*(it-1)).get_valeur()==">" || (*(it-1)).get_valeur()==";") && ((*(it+2)).get_valeur()== ">" )){
+              //pas d'erreur
+              }
+              else{
                 count++;
                 line_index_error= (*it).get_line_index();
                 cout << "Error found on line:  " <<line_index_error<<'\n';
                 }
 
-              }
+            }
 
-              else
-              {
+            else{
                 count++;
                 line_index_error= (*it).get_line_index();
                 cout << "Error found on line:  " <<line_index_error<<'\n';
-              }
-
-            }
+                }
           }
+      }
 
   //  //      "[" doit etre suivi de identifiant
     else if( (*it).get_valeur()=="[" )
@@ -344,10 +364,8 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
   //
         else if( (*it).get_valeur()== "label" )
           {
-            if( (*(it+1)).get_valeur()!= "=" )
-            {
+            if( (*(it+1)).get_valeur()!= "=" ){
               count++;
-
               line_index_error= (*it).get_line_index();
               cout << "Error found on line:  " <<line_index_error<<'\n';
             }
@@ -369,8 +387,8 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
   //
         else if( (*it).get_valeur()[0]=='"' )
              {
-               if( (*(it+1)).get_nature()== mot_clef )
-               { // Verification du couple ""
+               if( (*(it+1)).get_nature()== mot_clef ){
+                 // Verification du couple ""
                     if( (*(it+2)).get_valeur()[0]!= '"'  )
                     {
                       count++;
@@ -422,14 +440,14 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
 
     //      > est suivi de identifiant
           else if( (*it).get_valeur()==">" )
-                                {
-                                   if( (*(it+1)).get_nature()!= identifiant )
-                                       {
-                                         count++;
-                                         line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                        }
-                                 }
+                {
+                    if( (*(it+1)).get_nature()!= identifiant )
+                    {
+                        count++;
+                        line_index_error= (*it).get_line_index();
+                        cout << "Error found on line:  " <<line_index_error<<'\n';
+                    }
+                }
               }
   //  Verification des premieres et dernieres symboles
   //  premier symbole doit etre digraph
@@ -484,7 +502,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
 
     }
 
-
+//Etats de la MAE pour la fonction parser_json qui verifie le decoupage
 enum PARSER_JSON_FSM{
         START,
           MOT_CLEF,
@@ -501,349 +519,394 @@ enum PARSER_JSON_FSM{
           S9,
           S10,
           S11,
-        //  S12,
-        //  S13,
         FINISHED_JSON,
         ERROR,
       };
 
 
 bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
-     {
+{
        int count= 0;
-       // Compteur qui va etre à 0 si pas d'erreurs
-       // Valeur de compteur differente de 0 si'il y a des erreurs
+       // Compteur = 0 si pas d'erreurs
+       // Compteur!= 0 si'il y a des erreurs
        int line_index_error=0;
        // Ligne ou on constate l'erreur
 
        std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
-       // it est un iterateur qui pointe sur chaque symbole du vecteur
+       // it est un iterateur qui pointe sur chaque symbole json
 
-       //while(it!= symbole_vector_json.end()){
+      PARSER_JSON_FSM next_state = START;
 
-            PARSER_JSON_FSM next_state = START;
+      while (next_state != FINISHED_JSON){
 
-            while (next_state != FINISHED_JSON){
+        switch (next_state){
 
-             switch (next_state){
-               /////////////////////
-                 case START:
+            case START:
                  // On verifie que le premier mot du vecteur est bien {, sinon erreur
-                   if((*it).get_valeur()!= "{")
-                   {
-                     count++;
-                     cout << "Error found on line:  " << symbole_vector_json[0].get_line_index()<<'\n';
-                     next_state=ERROR;
-                   }
-                   else{
-
-                      it++;
-                      next_state= MOT_CLEF;
+                   if((*it).get_valeur()!= "{"){
+                          count++;
+                          cout << "Error found on line:  " << symbole_vector_json[0].get_line_index()<<'\n';
+                          next_state=ERROR;
                           }
+                   else{
+                          it++;
+                          next_state= MOT_CLEF;
+                    }
+                   break;
+
+            case MOT_CLEF:
+                  // On verifie que ce qui suit est bien mot_clef, sinon erreur
+                    if( (*it).get_nature()== mot_clef_json ){
+                          next_state=S2;
+                    }
+                    else if( (*it).get_valeur()== "}" ){ //{}, cas de ligne vide à gerer
+                          next_state=S10;
+                    }
+                    else{
+                          count++;
+                          line_index_error= (*it).get_line_index();
+                          cout << "Error found on line:  " <<line_index_error<<'\n';
+                          next_state=ERROR;
+                          }
+                      it++;
                       break;
 
-                   case MOT_CLEF :
 
-                       // On verifie que ce qui suit est bien mot_clef, sinon erreur
-
-                        if( (*it).get_nature()== mot_clef_json )
-                        {
-
-                          next_state=S2;
-
-                          }
-                        else if( (*it).get_valeur()== "}" ) //{}, cas de ligne vide à gerer
-                          {
-
-                            next_state=S10;
-
-                            }
-                          else{
-                              count++;
-                              line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                                    }
-                              it++;
-                            break;
-
-               /////////////////////
-                   case S2 :
+              case S2 :
                    //ce qui suit  le mot_clef doit etre un :, sinon erreur
-                          if( (*it).get_valeur()!= ":" )
-                          {
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                       next_state=ERROR;
-                                     }
-                              else{
-                                 it++;
-                                next_state=S3;}
-                                break;
-
-                   case S3:
-                   // ce qui suit : doit etre un [ ou ' sinon erreur
-                          if( (*it).get_valeur()=="[" ) //    {signal: [
-                          { next_state=START;}
-
-
-                          else if((*it).get_valeur()=="'" )  //{name: 'I1',
-                          {
-                            next_state=IDENTIFIANT;
-                          }
-
-                          else{
-                            count++;
-                                line_index_error= (*it).get_line_index();
-                                       cout << "Error found on line:  " <<line_index_error<<'\n';
-                                        next_state=ERROR;
-                          }
-
+                      if( (*it).get_valeur()!= ":" ){
+                          count++;
+                          line_index_error= (*it).get_line_index();
+                          cout << "Error found on line:  " <<line_index_error<<'\n';
+                          next_state=ERROR;
+                        }
+                      else{
                           it++;
-
-                         break;
-
-                   case IDENTIFIANT:
-                            if( (*it).get_nature()!=identifiant_json ) //{name: 'I1',
-                             {
-                               next_state=ERROR;
-                               count++;
-                               line_index_error= (*it).get_line_index();
-                               cout << "Error found on line:  " <<line_index_error<<'\n';
-                             }
-
-                      else
-                             {
-                               next_state=S4;
-                              }
-                           it++;
-                           break;
-
-                   case S4:
-
-                     if( (*it).get_valeur()!="'" ) //{name: 'I1',
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
+                          next_state=S3;
                         }
-                        else
-                               {
-                                 next_state=S5;
-                                }
-                        it++;
-                         break;
+                      break;
 
-                   case S5:
-                     if( (*it).get_valeur()!="," ) //{name: 'I1',
-                            {
-                              count++;
-                                  line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                          next_state=ERROR;
+              case S3:
+                   // ce qui suit : doit etre un [ ou ' sinon erreur
+                        if( (*it).get_valeur()=="[" ){
+                           next_state=START;
                             }
-                    else
-                          {
-                            next_state=S6;
-                          }
-                            it++;
-                             break;
-
-                   case S6:
-
-                     if  ((*it).get_valeur()!= "wave" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-
-                    else
-                        {
-                          next_state=S7;
-                        }
-                        it++;
-                         break;
-
-                   case S7:
-
-                     if(  (*it).get_valeur()!= ":" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
-                      else
-                            {
-                              next_state=S8;
+                        else if((*it).get_valeur()=="'" ){
+                           next_state=IDENTIFIANT;
                             }
-
-                            it++;
-                             break;
-
-
-                   case S8: //
-
-                     if  ((*it).get_valeur()!= "'" )
-                        {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                    cout << "Error found on line:  " <<line_index_error<<'\n';
-                                    next_state=ERROR;
-                        }
-
-                      else
-                            {
-                              next_state=TAB_VALEUR;
+                        else{
+                            count++;
+                            line_index_error= (*it).get_line_index();
+                            cout << "Error found on line:  " <<line_index_error<<'\n';
+                            next_state=ERROR;
                             }
-
-                            it++;
-                            break;
-
-                   case TAB_VALEUR: //
-
-                     if(  (*it).get_valeur()== "0"|| (*it).get_valeur()=="1" || (*it).get_valeur()== ".")
-                     {
-                       next_state=TAB_VALEUR;
-                     }
-
-                     else if (  (*it).get_valeur()== "'"){
-                       next_state=S9;
-                     }
-
-                    else {
-                          count++;
-                              line_index_error= (*it).get_line_index();
-                                     cout << "Error found on line:  " <<line_index_error<<'\n';
-                                     next_state=ERROR;
-                        }
                         it++;
-
                         break;
 
-                   case S9: //
+              case IDENTIFIANT:
+                        if( (*it).get_nature()!=identifiant_json ){
+                             next_state=ERROR;
+                             count++;
+                             line_index_error= (*it).get_line_index();
+                             cout << "Error found on line:  " <<line_index_error<<'\n';
+                             }
+                        else{
+                             next_state=S4;
+                             }
+                        it++;
+                        break;
 
-                           if(  ((*it).get_valeur())== "}" )
-                                {
-                                  next_state=S10;
-                                }
+              case S4:
+                     if( (*it).get_valeur()!="'" ){
+                             count++;
+                             line_index_error= (*it).get_line_index();
+                             cout << "Error found on line:  " <<line_index_error<<'\n';
+                             next_state=ERROR;
+                             }
+                      else{
+                              next_state=S5;
+                              }
+                      it++;
+                      break;
 
-
-                          else{ next_state=ERROR;
-                                count++;
-                                line_index_error= (*it).get_line_index();
-                                cout << "Error found on line:  " <<line_index_error<<'\n';}
-
-                             it++;
-                             break;
-
-                   case S10://,
-                           if( (*it).get_valeur()=="," )
-                          {next_state= START;}
-
-                          else if( (*it).get_valeur()=="]" )
-                               {next_state= S11;}
-
-
-                          else{
+              case S5:
+                     if( (*it).get_valeur()!="," ){
                               count++;
                               line_index_error= (*it).get_line_index();
                               cout << "Error found on line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
-                                }
+                              }
+                      else{
+                              next_state=S6;
+                              }
+                      it++;
+                      break;
 
-                             it++;
-                             break;
-
-                   case S11:
-                             if( (*it).get_valeur()!="}")
-                            {
+              case S6:
+                     if  ((*it).get_valeur()!= "wave" ){
                               count++;
-                                  line_index_error= (*it).get_line_index();
-                                         cout << "Error found on line:  " <<line_index_error<<'\n';
-                                         next_state=ERROR;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
+
+                    else{
+                              next_state=S7;
+                              }
+                    it++;
+                    break;
+
+              case S7:
+                     if(  (*it).get_valeur()!= ":" ){
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
+                     else{
+                              next_state=S8;
+                              }
+                     it++;
+                     break;
+
+              case S8:
+                    if  ((*it).get_valeur()!= "'" ){
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
+                    else{
+                              next_state=TAB_VALEUR;
+                              }
+
+                    it++;
+                    break;
+
+              case TAB_VALEUR:
+                     if(  (*it).get_valeur()== "0"|| (*it).get_valeur()=="1" || (*it).get_valeur()== "."){
+                              next_state=TAB_VALEUR;
+                              }
+                     else if (  (*it).get_valeur()== "'"){
+                              next_state=S9;
+                              }
+                    else {
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
+                    it++;
+                    break;
+
+              case S9:
+
+                      if(  ((*it).get_valeur())== "}" ){
+                              next_state=S10;
+                              }
+
+
+                      else{
+                              next_state=ERROR;
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
                             }
+                      it++;
+                      break;
 
-                            else{ next_state= FINISHED_JSON;
-                                  }
+              case S10:
+                      if( (*it).get_valeur()=="," )
+                              {next_state= START;}
 
-                             it++;
-                             break;
+                      else if( (*it).get_valeur()=="]" )
+                              {next_state= S11;}
+                      else{
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
 
-                 case ERROR:
-                               cout<< " The error is: " <<(*(it-1)).get_valeur()<< endl;
+                      it++;
+                      break;
+
+              case S11:
+                      if( (*it).get_valeur()!="}"){
+                              count++;
+                              line_index_error= (*it).get_line_index();
+                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              next_state=ERROR;
+                              }
+
+                      else{ next_state= FINISHED_JSON;}
+
+                      it++;
+                      break;
+
+                case ERROR:
+                              cout<< " The error is: " <<(*(it-1)).get_valeur()<< endl;
                               next_state=FINISHED_JSON;
                               it++;
                               break;
 
 
-                  case FINISHED_JSON:
+                case FINISHED_JSON:
                               //cout<< "Verification finished !! " <<'\n';
+                              break;
 
-
-                                           break;
-
-                  default:   cout << "Unknown state" <<'\n';
-                     next_state=FINISHED_JSON;
-                     break;
-
-
-
+                  default:    cout << "Unknown state" <<'\n';
+                              next_state=FINISHED_JSON;
+                              break;
                        }// fermeture du case
-
-                  // }// fermeture du while
-
                  }// fermeture du while
                 cout<< "Verification finished !! " <<'\n';
-                cout<< "Number of errors: " <<count<<'\n';
-              }
+                cout<< "Number of errors found: " <<count<<'\n';
+}
 
+// Etats de la MAE pour la fonction du parser_json qui cree les stimulus
 enum FSM_STATES_CREATE_STIMULUS
- { IS_NEW_CS,
+ {
+   IS_NEW_CS,
    FINISHED_CS,
-   ERASE,
-   CREATE,
    ERROR_CS,
  };
 
-// vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_vector_json)
-// {
-//   vector <Stimulus> stimulus_vector; // declaration de vecteur vide
-//   std::vector<Symbole_json>::iterator it;
-//   // it de type iterateur sur symbole_json
-//   int cpt_error = 0;
-// // On parcoure symbole vecteur json
-//   for(std::vector<Symbole>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end(); ++it){
-//
-//     if((*it).get_nature() == identifiant){
-//       FSM_STATES_CREATE_STIMULUS next_state = IS_NEW;
-//
-//       while (next_state != FINISHED_CS){
-//
-//           switch (next_state){
-//
-//             case IS_NEW :
-//              for(std::vector<Symbole>::iterator it2 = stimulus_vector.begin(); it2 != stimulus_vector.end(); ++it2){
-//                if((*it)==(*it2))
-//                   next_state =ERASE;
-//                else
-//                   next_state=ERROR_CS;supprime tout ce qui n'est pas identifiant ou valeur numerique
-//
-//               break;
-//
-//             case ERASE: // Dans cet etat on supprime tout ce qui n'est pas identifiant ou valeur numerique
-//               next_state=CREATE;
-//
-//               break;
-//
-//               case CREATE: // Dans cet etat on crée les stimulus
-//                 //next_state=;
-//
-//                 break;
-//
-//
-// }
+//Fonction parser pour le fichier json qui crée des objets stimulus
+vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_vector_json)
+{
+  // Declaration de vecteur vide SIMULUS_VECTOR
+  vector <Stimulus> stimulus_vector;
+
+  FSM_STATES_CREATE_STIMULUS next_state;
+
+  //Suppression des mot_clefs et ponctuations
+  for(std::vector<Symbole_json>::iterator it = symbole_vector_json.begin(); it != symbole_vector_json.end();)
+  {
+    if((*it).get_nature() == ponctuation_json || (*it).get_nature() == mot_clef_json)
+    {
+      it = symbole_vector_json.erase(it); // Pas d'incrementation
+    }
+    else{ ++it; }
+  }
+  // Variable dans la quelle on sauvegarde la derniere valeur de l'input
+  int sauvegarde=0;
+
+  // Declaration de it sur symbole_json à utiliser dans la FSM
+  std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
+
+    if((*it).get_nature() == identifiant_json){
+      FSM_STATES_CREATE_STIMULUS next_state = IS_NEW_CS;
+    }
+
+    while (next_state != FINISHED_CS ){
+
+          switch (next_state){
+
+            case IS_NEW_CS :
+
+            // Variable sauvegarde initialisé à 0 pour chaque nouveau stimulus
+            sauvegarde=0;
+
+            // Si stimulus_vector est vide => Creation du stimulus
+            if (stimulus_vector.empty()) {
+                //Creation de stimulus avec un seul attribut: string m_nom;
+                Stimulus new_stimulus((*it).get_valeur());
+                cout<<"Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
+                // Incrementation du it pour lire les valeurs numeriques
+                // Identifiant est suivi que de valeurs numeriques
+                it++;
+
+                while ((*it).get_nature()==valeur_numerique_json){
+
+                   if( (*it).get_valeur()=="1"){
+                       new_stimulus.add_valeur_stimulus(1);
+                       sauvegarde=1;
+                     }
+
+                   else if( (*it).get_valeur()=="0"){
+                       new_stimulus.add_valeur_stimulus(0);
+                       sauvegarde=0;
+                     }
+                   else{
+                        new_stimulus.add_valeur_stimulus(sauvegarde);
+                     }
+
+                    if( it== symbole_vector_json.end()) {}
+                    else { it++;}
+                  } // closed while
+
+               if( it== symbole_vector_json.end()){
+                        next_state=FINISHED_CS; // fin du vecteur symbole_json
+                        break;}
+
+               else{
+                    stimulus_vector.push_back( new_stimulus);
+                    next_state=IS_NEW_CS;
+                    break;}
+              }
+
+          else{ //stimulus_vector n'est pas vide
+
+            // Verification que le stimulus n'a pas deja ete declare
+              for(std::vector<Stimulus>::iterator it2 = stimulus_vector.begin(); it2 != stimulus_vector.end(); ++it2){
+               // Si deja declaré
+                if(((*it).get_valeur())==((*it2).get_nom())){
+                    cout<<(*it).get_valeur()<< " a deja été declaré! "<<endl;
+                    next_state = ERROR_CS;
+                    break;
+                  }
+               }
+
+              Stimulus new_stimulus((*it).get_valeur());
+              cout<< "Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
+              it++;
+                 // On remplit  le vecteur de int
+                  while ((*it).get_nature()==valeur_numerique_json )
+                  {
+                        if( (*it).get_valeur()=="1"){
+                          new_stimulus.add_valeur_stimulus(1);
+                          sauvegarde=1;
+                        }
+                        else if( (*it).get_valeur()=="0"){
+                          new_stimulus.add_valeur_stimulus(0);
+                          sauvegarde=0;
+                        }
+                        else{
+                          new_stimulus.add_valeur_stimulus(sauvegarde);
+                        }
+                        if( it== symbole_vector_json.end()){}
+                        else {  it++;}
+                    }// while closed
+                    // Dernier element du vecteur symbole_json
+                    if( it== symbole_vector_json.end())
+                          {
+                            stimulus_vector.push_back( new_stimulus);
+                            next_state=FINISHED_CS;
+                            break;
+                          }
+                    else{
+                        stimulus_vector.push_back( new_stimulus);
+                        next_state=IS_NEW_CS;
+                        break;
+                      }
+                  } // cas stimulus_vector pas vide OK
+
+
+              case ERROR_CS:
+                cout<<"ERREUR DE DECLARATION!"<<endl;
+                next_state= FINISHED_CS;
+                break;
+
+              case FINISHED_CS:
+                cout<<"DONE!"<<endl;
+                break;
+
+               default:
+                 cout<<"ERREUR DE FSM!"<<endl;
+                 next_state= FINISHED_CS;
+                 break;
+              }// case closed
+            }
+          return stimulus_vector;
+        } // Function closed
