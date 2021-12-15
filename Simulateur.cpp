@@ -48,6 +48,16 @@ static int orX_result(vector<int> tab_data_operation){
   return result;
 }
 
+static int not_result(int x){
+  return (x == 0) ? 1:0;
+}
+
+static int nandX_result(vector<int> tab_data_operation){
+  int result = andX_result(tab_data_operation);
+  result = not_result(result);
+  return result;
+}
+
 static int mux2_result(vector<int> tab_data_operation){
   if(tab_data_operation[0] == 0){
     return tab_data_operation[1];
@@ -55,11 +65,6 @@ static int mux2_result(vector<int> tab_data_operation){
     return tab_data_operation[2];
   }
 }
-
-// static void maj_tab_data(vector<int> &tab_data_operation, int maj_data){
-//   tab_data_operation.clear();
-//   tab_data_operation.push_back(maj_data);
-// }
 
 static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 
@@ -81,32 +86,33 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
   for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
 
     it_map = noeud_map.find(*it);
-    cout << (it_map->second).get_nom() << " apply to " << noeud.get_nom() << ", valeur :" <<(it_map->second).get_valeur() << endl;
+    cout << (it_map->second).get_nom() << " (logic value : " <<(it_map->second).get_valeur() << " )apply to " << noeud.get_nom() << endl;
 
   }
 
   switch ( noeud.get_type() ) {
       case ANDX:
         noeud.set_logic_state(andX_result(tab_data_operation));
-        //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        // cout << "AND" << noeud.get_nb_inout( ) << " result : " <<noeud.get_valeur( ) << endl;
+        break;
+
+      case NANDX:
+        noeud.set_logic_state(nandX_result(tab_data_operation));
         break;
 
       case XORX:
         noeud.set_logic_state(xorX_result(tab_data_operation));
-        //maj_tab_data(tab_data_operation, (it_map->second).get_valeur());
-        // cout << "XOR" << noeud.get_nb_inout( ) << " result : "<< noeud.get_valeur( ) << endl;
         break;
 
       case MUXX:
         noeud.set_logic_state(mux2_result(tab_data_operation));
-        //maj_tab_data(tab_data_operation, noeud.get_valeur());
-        // cout << "MUX" << noeud.get_nb_inout( ) -1 << " result : "<< noeud.get_valeur( ) << endl;
+        break;
+
+      case NOT:
+        noeud.set_logic_state(not_result(tab_data_operation[0]));
         break;
 
       case OUTPUT:
         noeud.set_logic_state((it_map->second).get_valeur());
-        // cout << "OUTPUT result : "<< noeud.get_valeur( ) << endl;
 
       default:
         break;

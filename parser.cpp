@@ -113,8 +113,16 @@ static Noeud create_a_noeud(string str_name, string str_type){
     Noeud new_noeud(str_name, OUTPUT, 1);
     return new_noeud;
   }
+  if(str_type == "NOT"){
+    Noeud new_noeud(str_name, NOT, 1);
+    return new_noeud;
+  }
   if(str_type == "AND2"){
     Noeud new_noeud(str_name, ANDX, 2);
+    return new_noeud;
+  }
+  if(str_type == "NAND2"){
+    Noeud new_noeud(str_name, NANDX, 2);
     return new_noeud;
   }
   if(str_type == "XOR2"){

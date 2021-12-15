@@ -11,6 +11,7 @@ enum TYPE_enum{
   OUTPUT,
   NOT,
   ANDX,
+  NANDX,
   XORX,
   MUXX,
   OTHER,
