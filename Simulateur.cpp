@@ -81,7 +81,7 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
 }
 
 
-int Simulateur(map<string, Noeud> noeud_map)
+int Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector)
 {
   for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
     if((it->second).get_type() == INPUT){

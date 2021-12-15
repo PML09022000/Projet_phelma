@@ -73,18 +73,15 @@ int main()
   std::vector<Stimulus> stimulus_vector; // = la valeur de retour de la fonction parser_json... ...à compléter
 
   //////////////////////  .JSON WORK END /////////////////////
-  /////////////// MATCH BETWEEN .DOT AND .JSON BEGIN /////////
   Stimulus Sti1("I1") ; Sti1.add_valeur_stimulus(1); Sti1.add_valeur_stimulus(0); stimulus_vector.push_back(Sti1);
   Stimulus Sti2("I2") ; Sti2.add_valeur_stimulus(1); Sti2.add_valeur_stimulus(1); stimulus_vector.push_back(Sti2);
   Stimulus Sti3("I3") ; Sti3.add_valeur_stimulus(0); Sti3.add_valeur_stimulus(1); stimulus_vector.push_back(Sti3);
-
-
-  apply_stimulus(noeud_map, stimulus_vector);
-
+  /////////////// MATCH BETWEEN .DOT AND .JSON BEGIN /////////
+  matching(noeud_map, stimulus_vector);
   std::cout << "DOT & JSON MATCHING FINISHED WITH SUCCES" << '\n';
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
   /////////////////// RUN SIMULATION BEGIN /////////////////
-
+  int output = Simulateur(noeud_map, stimulus_vector);
   /////////////////// RUN SIMULATION END /////////////////
   return 0;
 }

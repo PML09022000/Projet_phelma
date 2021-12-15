@@ -7,6 +7,6 @@
 #include "Noeud.h"
 #include "stimulus.h"
 
-void apply_stimulus(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector);
+void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector);
 
 #endif

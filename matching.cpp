@@ -27,7 +27,7 @@ static bool is_name_in_stimulus_vector(string name, vector<Stimulus> stimulus_ve
   return false;
 }
 
-void apply_stimulus(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
+void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
   int cpt_error = 0;
 
   CHECK_NOEUD_MAP_IN_STIMULUS_VECTOR_FSM_STATE state_1 = IS_NOEUD_IN_MAP_AN_INPUT;
@@ -64,7 +64,7 @@ void apply_stimulus(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vect
     switch(state_2){
       case IS_STIMULUS_NAME_IN_MAP_AS_AN_INPUT:
         it_map = noeud_map.find((*it).get_nom());
-        state_2 = (it_map != noeud_map.end()) ? NEXT_STIMULUS : ERROR_STIMULUS_TO_UNDECLARED_INPUT;
+        state_2 = (it_map != noeud_map.end() && (it_map->second).get_type() == INPUT) ? NEXT_STIMULUS : ERROR_STIMULUS_TO_UNDECLARED_INPUT;
         break;
 
       case ERROR_STIMULUS_TO_UNDECLARED_INPUT:
