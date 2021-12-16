@@ -17,11 +17,13 @@
 
 #define display 0
 
+
+
 int main()
 {
   //////////////////////  .DOT WORK //////////////////////
 
-  std::vector<std::string> dot_line_vector = file_to_string_vector("xor2.dot");
+  std::vector<std::string> dot_line_vector = file_to_string_vector("and2.dot");
   // Affichage Vector de lignes//
   cout << "\nFILE .DOT OK " << endl;
   if(display){
@@ -44,7 +46,7 @@ int main()
 
   cout << endl;
 
-  map<string, Noeud> noeud_map = parser(symbole_vector);
+  map<string, Noeud> noeud_map = parser_dot(symbole_vector);
   // Affichage Map de Noeud//
   cout << "\nPARSER .DOT FINISHED WITH SUCCES " << endl;
   if(display){
