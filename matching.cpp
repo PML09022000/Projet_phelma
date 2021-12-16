@@ -91,3 +91,19 @@ void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
     exit(-1);
   }
 }
+
+void check_is_there_an_output(map<string, Noeud> noeud_map){
+  bool output = false;
+  for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it){
+    if((it->second).get_type() == OUTPUT){
+      output = true;
+      break;
+    }
+  }
+  if(output){
+    return;
+  }else{
+    std::cout << "NO OUTPUT TO CALCULATE, EXIT" << '\n';
+    exit(-1);
+  }
+}

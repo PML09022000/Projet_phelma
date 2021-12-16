@@ -93,6 +93,10 @@ int main()
   cout << endl;
   /////////////// MATCH BETWEEN .DOT AND .JSON END /////////
 
+  ////////// IS THERE AN OUTPUT TO CALCULATE BEGIN /////////
+  check_is_there_an_output(noeud_map);
+  ////////// IS THERE AN OUTPUT TO CALCULATE END /////////
+
   /////////////////// RUN SIMULATION BEGIN /////////////////
   std::cout << "\nSTARTING SIMULATION" << '\n';
   vector<Stimulus> output_result_vector = Simulateur(noeud_map, stimulus_vector);

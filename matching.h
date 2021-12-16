@@ -8,5 +8,6 @@
 #include "stimulus.h"
 
 void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector);
+void check_is_there_an_output(map<string, Noeud> noeud_map);
 
 #endif

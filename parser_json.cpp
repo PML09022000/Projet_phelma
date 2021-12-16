@@ -307,7 +307,7 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
   std::vector<Symbole_json>::iterator it = symbole_vector_json.begin();
 
     if((*it).get_nature() == identifiant_json){
-      FSM_STATES_CREATE_STIMULUS next_state = IS_NEW_CS;
+      next_state = IS_NEW_CS;
     }
 
     while (next_state != FINISHED_CS ){
@@ -323,7 +323,7 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
             if (stimulus_vector.empty()) {
                 //Creation de stimulus avec un seul attribut: string m_nom;
                 Stimulus new_stimulus((*it).get_valeur());
-                cout<<"Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
+                // cout<<"Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
                 // Incrementation du it pour lire les valeurs numeriques
                 // Identifiant est suivi que de valeurs numeriques
                 it++;
@@ -348,6 +348,7 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
                   } // closed while
 
                if( it== symbole_vector_json.end()){
+                        stimulus_vector.push_back( new_stimulus);
                         next_state=FINISHED_CS; // fin du vecteur symbole_json
                         break;}
 
@@ -370,7 +371,7 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
                }
 
               Stimulus new_stimulus((*it).get_valeur());
-              cout<< "Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
+              // cout<< "Creation d'objet stimulus: "<<(*it).get_valeur()<<endl;
               it++;
                  // On remplit  le vecteur de int
                   while ((*it).get_nature()==valeur_numerique_json )
