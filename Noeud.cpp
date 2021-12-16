@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-Noeud::Noeud(string nom1, TYPE_enum type1, int nb): m_nom(nom1), m_type(type1), m_nb_inout(nb), m_valeur(2) // liste d'initialisation
+Noeud::Noeud(string nom1, TYPE_enum type1, unsigned int nb): m_nom(nom1), m_type(type1), m_nb_inout(nb), m_valeur(2) // liste d'initialisation
 {
   //std::cout << "Construction of class Noeud"<< std::endl;
 }
@@ -31,7 +31,7 @@ int Noeud:: get_valeur()const{
 }
 
 
-int Noeud::get_nb_inout() const{
+unsigned int Noeud::get_nb_inout() const{
   return this-> m_nb_inout;
 }
 

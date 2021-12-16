@@ -26,7 +26,7 @@ vector<Symbole> lexeme_dot(vector<string> &txt_line_vector){
 
     string token;
 
-    for(int i = 0; i <= str.length(); i++)
+    for(unsigned int i = 0; i <= str.length(); i++)
     {
 
       token.clear();
@@ -97,7 +97,7 @@ vector<Symbole_json> lexeme_json(vector<string> &txt_line_vector){
 
     string token;
 
-    for(int i = 0; i <= str.length(); i++)
+    for(unsigned int i = 0; i <= str.length(); i++)
     {
 
       token.clear();

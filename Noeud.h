@@ -28,13 +28,13 @@ class Noeud {
   private:
     string m_nom;
     TYPE_enum m_type;
-    int m_nb_inout;
+    unsigned int m_nb_inout;
     int m_valeur;
     vector<string> m_noeud_noms_pre; //vecteur de Noeuds avec les adresses sur les quelles il pointe
 
   public:
     // Constructeur
-    Noeud(string nom, TYPE_enum type,int nb_inout);
+    Noeud(string nom, TYPE_enum type, unsigned int nb_inout);
     //Destructeur
     ~Noeud();
 
@@ -42,7 +42,7 @@ class Noeud {
     string get_nom() const;
     TYPE_enum get_type() const;
     int get_valeur() const;
-    int get_nb_inout() const;
+    unsigned int get_nb_inout() const;
     void print_link() ;
 
     vector<string> get_links() const;

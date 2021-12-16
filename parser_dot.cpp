@@ -17,7 +17,7 @@ enum CREATE_AND_COMPLETE_NOEUD_FSM_STATES{
       NEED_TO_ADD_SPECIAL_LINK_OR_NOT,
       ERROR_VARIABLE_UNDECLARED,
     OLD_IDENTIFIANT,
-      IS_IT_BETWEEN_COTE,
+      IS_IT_SPECIAL_LINK_OR_NOT,
       ADD_LINK,
       ERROR_VARIABLE_LINKS_G,
       ERROR_VARIABLE_LINKS_INPUT,
@@ -371,12 +371,11 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
                 break;
 
               case OLD_IDENTIFIANT :
-                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : ERROR_VARIABLE_LINKS_G;
-                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : IS_IT_BETWEEN_COTE;
+                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : IS_IT_SPECIAL_LINK_OR_NOT;
               break;
 
-              case IS_IT_BETWEEN_COTE:
-                if( (*(it1-1)).get_nature() == ponctuation && (*(it1+1)).get_nature() == ponctuation){
+              case IS_IT_SPECIAL_LINK_OR_NOT:
+                if( (*(it1-1)).get_nature() == ponctuation && (*(it1+1)).get_nature() == ponctuation && (*(it1-3)).get_nature() == mot_clef ){
                   next_state = FINISHED;
                 }else{
                   next_state = ERROR_VARIABLE_LINKS_G;
@@ -420,19 +419,19 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
 
               case ERROR_VARIABLE_LINKS_G :
                 cpt_error ++;
-                cout << "Error parsing, there si no good links for " << (*it1).get_valeur() << "at line " << (*it1).get_line_index() << endl;
+                cout << "Error parsing, there si no good links for " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 
               case ERROR_VARIABLE_LINKS_INPUT :
                 cpt_error ++;
-                cout << "Error parsing, Missing '->' after INPUT " << (*it1).get_valeur() << "at line " << (*it1).get_line_index() << endl;
+                cout << "Error parsing, Missing '->' after INPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 
               case ERROR_VARIABLE_LINKS_OUTPUT :
                 cpt_error ++;
-                cout << "Error parsing, Missing '->' after INPUT " << (*it1).get_valeur() << "at line " << (*it1).get_line_index() << endl;
+                cout << "Error parsing, Missing '->' before OUTPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 

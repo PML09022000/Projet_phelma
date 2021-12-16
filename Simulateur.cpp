@@ -98,7 +98,7 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
   for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
 
     it_map = noeud_map.find(*it);
-    cout << (it_map->second).get_nom() << " (logic value : " <<(it_map->second).get_valeur() << " )apply to " << noeud.get_nom() << endl;
+    cout << (it_map->second).get_nom() << " (logic value : " <<(it_map->second).get_valeur() << ") apply to " << noeud.get_nom() << endl;
 
   }
 
