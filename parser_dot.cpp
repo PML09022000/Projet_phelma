@@ -125,12 +125,21 @@ static Noeud create_a_noeud(string str_name, string str_type){
 }
 
 void parser_decoupage(vector<Symbole> &symbole_vector){
+
 //Methode 2
   int count= 0;
   // Compteur qui va etre à 0 si pas d'erreurs
   // Valeur de compteur differente de 0 si'il y a des erreurs
   int line_index_error=0;
   // Ligne ou on constate l'erreur
+
+
+  if(symbole_vector[3].get_valeur()== "}")
+  {
+    cout << "Empty graph!" <<'\n';
+    exit(-1);
+  }
+
 
 
   for(std::vector<Symbole>::iterator it = (symbole_vector.begin()+3); it != (symbole_vector.end()-2); ++it)
@@ -285,8 +294,8 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
             //  troisieme symbole doit etre {
             if(symbole_vector[2].get_valeur()!= "{")
             {
-            count++;
-            cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
+              count++;
+              cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
             }
 
   //  Dernier symbole doit etre {
@@ -311,12 +320,12 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
   // Affichage des erreurs et des numeros de lignes
 
         if(count==0) {
-        cout << "No errors found" << '\n';
+        cout << "No errors found in parser_decoupage.dot!" << '\n';
 
         }
         else {
-        cout << "Nb errors " << count<<'\n';
-        exit(-1);
+          cout << "Number of errors in parser_decoupage.dot!" << count<<'\n';
+          exit(-1);
         }
 
 }
