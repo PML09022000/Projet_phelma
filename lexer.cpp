@@ -10,6 +10,12 @@ using namespace std;
 
 vector<Symbole> lexeme_dot(vector<string> &txt_line_vector){
 
+  if(txt_line_vector.size() < 1){
+    cout << "EMPTY FILE .DOT" << endl;
+    cout << "Prog killed in lexer.cpp"<< endl<< endl;
+    exit(-1);
+  }
+
   std::vector<Symbole> symbole_vector;
   int cpt_error = 0;
 
@@ -74,6 +80,12 @@ vector<Symbole> lexeme_dot(vector<string> &txt_line_vector){
 
 
 vector<Symbole_json> lexeme_json(vector<string> &txt_line_vector){
+
+  if(txt_line_vector.size() < 1){
+    cout << "EMPTY FILE .JSON" << endl;
+    cout << "Prog killed in lexer.cpp"<< endl<< endl;
+    exit(-1);
+  }
 
   std::vector<Symbole_json> symbole_vector;
   int cpt_error = 0;
