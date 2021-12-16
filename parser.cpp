@@ -518,6 +518,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
         }
         else {
         cout << "Nb errors " << count<<'\n';
+        exit(-1);
         }
 
     }
@@ -780,8 +781,14 @@ bool parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                               break;
                        }// fermeture du case
                  }// fermeture du while
-                cout<< "Verification finished !! " <<'\n';
-                cout<< "Number of errors found: " <<count<<'\n';
+
+                if(count==0){
+                  cout<< "No errors found in parsing decoupage.json ! " <<endl;
+                }
+                else {
+                  cout<< "Number of errors found in parsing decoupage.json : " <<count<<'\n';
+                  exit(-1);
+                }
 }
 
 // Etats de la MAE pour la fonction du parser_json qui cree les stimulus
