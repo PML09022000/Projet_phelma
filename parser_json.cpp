@@ -1,17 +1,12 @@
 #include <iostream>
 #include <string>
-#include <vector>
-#include <map>
 #include <iterator>
 #include <algorithm>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "symbole.h"
-#include "symbole_json.h"
-#include "Noeud.h"
-#include "parser.h"
-#include "stimulus.h"
+#include "parser_json.h"
+
 
 //Etats de la MAE pour la fonction parser_json qui verifie le decoupage
 enum PARSER_JSON_FSM{

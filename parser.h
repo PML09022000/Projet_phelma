@@ -1,15 +1,15 @@
 #ifndef _PARSER_H_
 #define _PARSER_H_
 
+#include <vector>
+#include <string>
+#include <map>
+
 #include "symbole.h"
 #include "stimulus.h"
 #include "symbole_json.h"
 #include "Noeud.h"
 #include "stimulus.h"
-
-
-#include <string>
-#include <map>
 
 
 map<string, Noeud> parser_dot(vector<Symbole> &symbole_vector);
