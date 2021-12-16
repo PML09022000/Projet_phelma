@@ -344,7 +344,7 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
 
 
       if( (*it).get_nature()==identifiant ){
-          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" ){
+          if( (*(it+1)).get_valeur()!="["  && (*(it+1)).get_valeur()!=";" && (*(it+1)).get_valeur()[0]!='"' ){
           //Identifiant doit etre suivie par [ ou  ;
 
             if ( (*(it+1)).get_valeur()== "-"){
@@ -403,21 +403,21 @@ bool parser_decoupage(vector<Symbole> &symbole_vector)
            }
   //
   //
-  // //      "  est suivi de mot_clef
+  // //      "  est suivi de mot_clef ] ou identifiant dans le cas du mux
   //
         else if( (*it).get_valeur()[0]=='"' )
              {
-               if( (*(it+1)).get_nature()== mot_clef ){
-                 // Verification du couple ""
-                    if( (*(it+2)).get_valeur()[0]!= '"'  )
-                    {
-                      count++;
-                      line_index_error= (*it).get_line_index();
-                      cout << "Error found on line:  " <<line_index_error<<'\n';
-                    }
-                }
+               // if( (*(it+1)).get_nature()!= mot_clef ){
+               //   // Verification du couple ""
+               //      // if( (*(it+2)).get_valeur()[0]!= '"'  )
+               //      // {
+               //        // count++;
+               //        // line_index_error= (*it).get_line_index();
+               //        // cout << "Error found on line:  " <<line_index_error<<'\n';
+               //      //}
+               //  }
 
-              else if ( (*(it+1)).get_valeur()!= "]" )
+             if ( (*(it+1)).get_nature()!= mot_clef && (*(it+1)).get_nature()!=identifiant && (*(it+1)).get_valeur()!= "]" )
                 {
                   count++;
                   line_index_error= (*it).get_line_index();
