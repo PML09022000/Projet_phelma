@@ -21,7 +21,7 @@ int main()
 {
   //////////////////////  .DOT WORK //////////////////////
 
-  std::vector<std::string> dot_line_vector = file_to_string_vector("mux.dot");
+  std::vector<std::string> dot_line_vector = file_to_string_vector("xor2.dot");
   // Affichage Vector de lignes//
   cout << "\nFILE .DOT OK " << endl;
   if(display){
