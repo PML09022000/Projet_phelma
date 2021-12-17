@@ -59,7 +59,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                  // On verifie que le premier mot du vecteur est bien {, sinon erreur
                    if((*it).get_valeur()!= "{"){
                           count++;
-                          cout << "Error found on line:  " << symbole_vector_json[0].get_line_index()<<'\n';
+                          cout << "parser_json.cpp, ERROR : line:  " << symbole_vector_json[0].get_line_index()<<'\n';
                           next_state=ERROR;
                           }
                    else{
@@ -79,7 +79,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                     else{
                           count++;
                           line_index_error= (*it).get_line_index();
-                          cout << "Error found on line:  " <<line_index_error<<'\n';
+                          cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                           next_state=ERROR;
                           }
                       it++;
@@ -91,7 +91,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                       if( (*it).get_valeur()!= ":" ){
                           count++;
                           line_index_error= (*it).get_line_index();
-                          cout << "Error found on line:  " <<line_index_error<<'\n';
+                          cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                           next_state=ERROR;
                         }
                       else{
@@ -111,7 +111,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                         else{
                             count++;
                             line_index_error= (*it).get_line_index();
-                            cout << "Error found on line:  " <<line_index_error<<'\n';
+                            cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                             next_state=ERROR;
                             }
                         it++;
@@ -122,7 +122,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                              next_state=ERROR;
                              count++;
                              line_index_error= (*it).get_line_index();
-                             cout << "Error found on line:  " <<line_index_error<<'\n';
+                             cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                              }
                         else{
                              next_state=S4;
@@ -134,7 +134,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                      if( (*it).get_valeur()!="'" ){
                              count++;
                              line_index_error= (*it).get_line_index();
-                             cout << "Error found on line:  " <<line_index_error<<'\n';
+                             cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                              next_state=ERROR;
                              }
                       else{
@@ -147,7 +147,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                      if( (*it).get_valeur()!="," ){
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
                       else{
@@ -160,7 +160,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                      if  ((*it).get_valeur()!= "wave" ){
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
 
@@ -174,7 +174,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                      if(  (*it).get_valeur()!= ":" ){
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
                      else{
@@ -187,7 +187,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                     if  ((*it).get_valeur()!= "'" ){
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
                     else{
@@ -207,7 +207,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                     else {
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
                     it++;
@@ -224,7 +224,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                               next_state=ERROR;
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                             }
                       it++;
                       break;
@@ -238,7 +238,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                       else{
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
 
@@ -249,7 +249,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                       if( (*it).get_valeur()!="}"){
                               count++;
                               line_index_error= (*it).get_line_index();
-                              cout << "Error found on line:  " <<line_index_error<<'\n';
+                              cout << "parser_json.cpp, ERROR : line:  " <<line_index_error<<'\n';
                               next_state=ERROR;
                               }
 
@@ -259,7 +259,7 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                       break;
 
                 case ERROR:
-                              cout<< " The error is: " <<(*(it-1)).get_valeur()<< endl;
+                              cout<< " parser_json.cpp, ERROR : value: " <<(*(it-1)).get_valeur()<< endl;
                               next_state=FINISHED_JSON;
                               it++;
                               break;
@@ -276,10 +276,10 @@ void parser_decoupage_json(vector<Symbole_json> &symbole_vector_json)
                  }// fermeture du while
 
                 if(count==0){
-                  cout<< "No errors found in parsing decoupage.json ! " <<endl;
+                //  cout<< "No errors found in parsing decoupage.json ! " <<endl;
                 }
                 else {
-                  cout<< "Number of errors found in parsing decoupage.json : " <<count<<'\n';
+                  cout<< "parser_json.cpp, TOTAL ERRORS BEFORE KILL : " <<count<<'\n';
                   exit(-1);
                 }
 }
@@ -364,7 +364,7 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
               for(std::vector<Stimulus>::iterator it2 = stimulus_vector.begin(); it2 != stimulus_vector.end(); ++it2){
                // Si deja declaré
                 if(((*it).get_valeur())==((*it2).get_nom())){
-                    cout<<(*it).get_valeur()<< " a deja été declaré! "<<endl;
+                    cout << "parser_json.cpp, ERROR : "<<(*it).get_valeur()<< " already declared "<<endl;
                     next_state = ERROR_CS;
                     break;
                   }
@@ -406,16 +406,16 @@ vector <Stimulus> parser_create_stimulus_vector(vector<Symbole_json> &symbole_ve
 
 
               case ERROR_CS:
-                cout<<"ERREUR DE DECLARATION!"<<endl;
+                cout<<"parser_json.cpp, ERROR : ERREUR DE DECLARATION!"<<endl;
                 next_state= FINISHED_CS;
                 break;
 
               case FINISHED_CS:
-                cout<<"DONE!"<<endl;
+                cout<<"parser_json.cpp, ERROR : DONE!"<<endl;
                 break;
 
                default:
-                 cout<<"ERREUR DE FSM!"<<endl;
+                 cout<<"parser_json.cpp, ERROR :ERREUR DE FSM!"<<endl;
                  next_state= FINISHED_CS;
                  break;
               }// case closed

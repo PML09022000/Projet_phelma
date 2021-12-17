@@ -44,7 +44,7 @@ void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
 
       case ERROR_NO_STIMULUS:
         cpt_error++;
-        cout << "Error check stimulus, INPUT " << (it->second).get_nom() << " don't have her STIMULUS" << endl;
+        cout << "matching.cpp, ERROR : INPUT " << (it->second).get_nom() << " don't have her STIMULUS" << endl;
         state_1 = NEXT_NOEUD;
         break;
 
@@ -69,7 +69,7 @@ void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
 
       case ERROR_STIMULUS_TO_UNDECLARED_INPUT:
         cpt_error++;
-        cout << "Error check stimulus, STIMULUS " << (*it).get_nom() << " don't have his INPUT" << endl;
+        cout << "matching.cpp, ERROR : stimulus " << (*it).get_nom() << " don't have his INPUT" << endl;
         state_2 = NEXT_STIMULUS;
         break;
 
@@ -86,10 +86,15 @@ void matching(map<string, Noeud> noeud_map, vector<Stimulus> stimulus_vector){
   if(cpt_error == 0){
 
   }else{
-    cout << "Nombre total d'erreurs : " << cpt_error << endl;
-    cout << "Prog killed in check_stimulus.cpp"<< endl<< endl;
+    cout << "matching.cpp, TOTAL ERRORS BEFORE KILL : "  << cpt_error << endl;
+    cout << "matching.cpp, PROG KILLED\n" << endl;
     exit(-1);
   }
+
+  ////////// IS THERE AN OUTPUT TO CALCULATE BEGIN /////////
+  check_is_there_an_output(noeud_map);
+  ////////// IS THERE AN OUTPUT TO CALCULATE END /////////
+
 }
 
 void check_is_there_an_output(map<string, Noeud> noeud_map){
@@ -103,7 +108,8 @@ void check_is_there_an_output(map<string, Noeud> noeud_map){
   if(output){
     return;
   }else{
-    std::cout << "NO OUTPUT TO CALCULATE, EXIT" << '\n';
+    std::cout << "matching.cpp, INFO : no output to calculate" << '\n';
+    cout << "matching.cpp, PROG KILLED\n" << endl;
     exit(-1);
   }
 }

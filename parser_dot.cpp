@@ -124,7 +124,24 @@ static Noeud create_a_noeud(string str_name, string str_type){
   }
 }
 
-void parser_decoupage(vector<Symbole> &symbole_vector){
+
+static void loop_recursive_function(Noeud noeud, map<string, Noeud> noeud_map, string noeud_name){
+  std::map<string,Noeud>::iterator it_map;
+  vector<string> dependances = noeud.get_links();
+
+  for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
+    if(noeud_name == (*it)){
+      cout << "parser_dot.cpp, ERROR : loop detected for " << noeud_name << ", EXIT NOW" << endl;
+      exit(-1);
+    }else{
+      it_map = noeud_map.find(*it);
+      loop_recursive_function((it_map->second), noeud_map, noeud_name);
+    }
+  }
+}
+
+
+void parser_decoupage_dot(vector<Symbole> &symbole_vector){
 
 //Methode 2
   int count= 0;
@@ -136,7 +153,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
 
   if(symbole_vector[3].get_valeur()== "}")
   {
-    cout << "Empty graph!" <<'\n';
+    cout << "parser_dot.cpp, ERROR : Empty graph!" <<'\n';
     exit(-1);
   }
 
@@ -163,7 +180,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
               else{
                 count++;
                 line_index_error= (*it).get_line_index();
-                cout << "Error found on line:  " <<line_index_error<<'\n';
+                cout << "parser_dot.cpp, ERROR : line:  " <<line_index_error<<'\n';
                 }
 
             }
@@ -171,7 +188,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
             else{
                 count++;
                 line_index_error= (*it).get_line_index();
-                cout << "Error found on line:  " <<line_index_error<<'\n';
+                cout << "parser_dot.cpp, ERROR : line:  " <<line_index_error<<'\n';
                 }
           }
       }
@@ -183,7 +200,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
            {
              count++;
              line_index_error= (*it).get_line_index();
-             cout << "Error found on line:  " <<line_index_error<<'\n';
+             cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
            }
           }
   //
@@ -194,7 +211,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
             if( (*(it+1)).get_valeur()!= "=" ){
               count++;
               line_index_error= (*it).get_line_index();
-              cout << "Error found on line:  " <<line_index_error<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
             }
            }
   //      =  est suivi de "
@@ -205,7 +222,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
             {
               count++;
               line_index_error= (*it).get_line_index();
-              cout << "Error found on line:  " <<line_index_error<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
             }
            }
   //
@@ -228,7 +245,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
                 {
                   count++;
                   line_index_error= (*it).get_line_index();
-                  cout << "Error found on line:  " <<line_index_error<<'\n';
+                  cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
                 }
               }
 
@@ -239,7 +256,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
                   {
                       count++;
                       line_index_error= (*it).get_line_index();
-                      cout << "Error found on line:  " <<line_index_error<<'\n';
+                      cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
                     }
                }
   //      ; est suivi de identifiant
@@ -249,7 +266,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
                   {
                     count++;
                     line_index_error= (*it).get_line_index();
-                    cout << "Error found on line:  " <<line_index_error<<'\n';
+                    cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
                   }
              }
 
@@ -261,7 +278,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
                        {
                          count++;
                          line_index_error= (*it).get_line_index();
-                         cout << "Error found on line:  " <<line_index_error<<'\n';
+                         cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
                        }
                   }
 
@@ -272,7 +289,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
                     {
                         count++;
                         line_index_error= (*it).get_line_index();
-                        cout << "Error found on line:  " <<line_index_error<<'\n';
+                        cout << "parser_dot.cpp, ERROR : line " <<line_index_error<<'\n';
                     }
                 }
               }
@@ -282,20 +299,20 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
             {
               count++;
 
-              cout << "Error found on line:  " << symbole_vector[0].get_line_index()<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " << symbole_vector[0].get_line_index()<<'\n';
             }
             // deuxieme symbole doit etre identifiant
             if(symbole_vector[1].get_nature()!= identifiant)
                   {
                     count++;
-                    cout << "Error found on line:  " << symbole_vector[1].get_line_index()<<'\n';
+                    cout << "parser_dot.cpp, ERROR : line " << symbole_vector[1].get_line_index()<<'\n';
                   }
 
             //  troisieme symbole doit etre {
             if(symbole_vector[2].get_valeur()!= "{")
             {
               count++;
-              cout << "Error found on line:  " << symbole_vector[2].get_line_index()<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " << symbole_vector[2].get_line_index()<<'\n';
             }
 
   //  Dernier symbole doit etre {
@@ -306,7 +323,7 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
               if((*((symbole_vector.end()-1))).get_valeur()!= "}")
               {
               count++;
-              cout << "Error found on line:  " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " << (*((symbole_vector.end()-1))).get_line_index()<<'\n';
               }
 
               //  Avant dernier symbole doit etre ;
@@ -314,23 +331,22 @@ void parser_decoupage(vector<Symbole> &symbole_vector){
               if((*((symbole_vector.end()-2))).get_valeur()!= ";")
               {
               count++;
-              cout << "Error found on line:  " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
+              cout << "parser_dot.cpp, ERROR : line " << (*((symbole_vector.end()-2))).get_line_index()<<'\n';
               }
 
   // Affichage des erreurs et des numeros de lignes
 
         if(count==0) {
-        cout << "No errors found in parser_decoupage.dot!" << '\n';
-
+          //cout << "No errors found in parser_decoupage.dot!" << '\n';
         }
         else {
-          cout << "Number of errors in parser_decoupage.dot!" << count<<'\n';
+          cout << "parser_dot.cpp, TOTAL ERRORS BEFORE KILL : " << count<<'\n';
           exit(-1);
         }
 
 }
 
-map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
+map<string, Noeud>  parser_nodes_and_links(vector<Symbole> &symbole_vector){
 
     map<string, Noeud> noeud_map;
     std::map<string,Noeud>::iterator it;
@@ -413,25 +429,25 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
 
               case ERROR_VARIABLE_UNDECLARED :
                 cpt_error ++;
-                cout << "Error parsing, " << (*it1).get_valeur() << " must be declared first" << endl;
+                cout << "parser_dot.cpp, ERROR : " << (*it1).get_valeur() << " must be declared first" << endl;
                 next_state = FINISHED;
               break;
 
               case ERROR_VARIABLE_LINKS_G :
                 cpt_error ++;
-                cout << "Error parsing, there si no good links for " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
+                cout << "parser_dot.cpp, ERROR : no good links for " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 
               case ERROR_VARIABLE_LINKS_INPUT :
                 cpt_error ++;
-                cout << "Error parsing, Missing '->' after INPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
+                cout << "parser_dot.cpp, ERROR : missing '->' after INPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 
               case ERROR_VARIABLE_LINKS_OUTPUT :
                 cpt_error ++;
-                cout << "Error parsing, Missing '->' before OUTPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
+                cout << "parser_dot.cpp, ERROR : missing '->' before OUTPUT " << (*it1).get_valeur() << " at line " << (*it1).get_line_index() << endl;
                 next_state = FINISHED;
               break;
 
@@ -446,18 +462,24 @@ map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector){
         }else{
         }
       }
+
+      for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
+        loop_recursive_function((it->second), noeud_map, (it->second).get_nom());
+      }
+
       // Check Nb_link OK With nb get_nb_inout
       for(map<string, Noeud>::iterator it = noeud_map.begin(); it != noeud_map.end(); ++it) {
         if((it->second).get_nb_inout() != ( (it->second).get_links() ).size() ){
           cpt_error ++;
-          cout << "Error parsing, " << (it->second).get_nom() << " should have " << (it->second).get_nb_inout() << " links but have " << ( (it->second).get_links() ).size() << endl;
+          cout << "parser_dot.cpp, ERROR : " << (it->second).get_nom() << " should have " << (it->second).get_nb_inout() << " links but have " << ( (it->second).get_links() ).size() << endl;
         }else{}
       }
+
       if(cpt_error == 0){
         return noeud_map;
       }else{
-        cout << "Nombre total d'erreurs : " << cpt_error << endl;
-        cout << "Prog killed in parser.cpp"<< endl<< endl;
+        cout << "parser_dot.cpp, TOTAL ERRORS BEFORE KILL : " << cpt_error << endl;
+        cout << "parser_dot.cpp, PROG KILLED\n" << endl;
         exit(-1);
       }
 

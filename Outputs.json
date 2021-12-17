@@ -1,3 +1,4 @@
 {signal: [
-	{name: 'O',  wave: '0......10'}',
+	{name: 'C_out',  wave: '0..101..'}',
+	{name: 'SUM',  wave: '01.010.1'}',
 ]}

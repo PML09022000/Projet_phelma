@@ -8,7 +8,7 @@
 #include "symbole.h"
 #include "Noeud.h"
 
-map<string, Noeud>  parser_structure(vector<Symbole> &symbole_vector);
-void parser_decoupage(vector<Symbole> &symbole_vector);
+void parser_decoupage_dot(vector<Symbole> &symbole_vector);
+map<string, Noeud>  parser_nodes_and_links(vector<Symbole> &symbole_vector);
 
 #endif

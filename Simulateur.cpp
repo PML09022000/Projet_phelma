@@ -12,6 +12,8 @@
 
 using namespace std;
 
+#define debug 0
+
 enum SUMULATOR_FSM_STATE{
   CHECK_INDEX_IN_STMULUS_VECTOR,
   REINITIALIZE_NOEUDS_VALUES,
@@ -41,7 +43,7 @@ static int xorX_result(vector<int> tab_data_operation){
 }
 
 static int orX_result(vector<int> tab_data_operation){
-  int result = 1;
+  int result = 0;
   for(std::vector<int>::iterator it = tab_data_operation.begin(); it != tab_data_operation.end(); ++it){
     result |= *it;
   }
@@ -95,11 +97,11 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
     tab_data_operation.push_back((it_map->second).get_valeur( ));
   }
 
-  for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
-
-    it_map = noeud_map.find(*it);
-    cout << (it_map->second).get_nom() << " (logic value : " <<(it_map->second).get_valeur() << ") apply to " << noeud.get_nom() << endl;
-
+  if(debug){
+    for(std::vector<string>::iterator it = dependances.begin(); it != dependances.end(); ++it){
+      it_map = noeud_map.find(*it);
+      cout  << "simulateur.cpp, DEBUG : "<< (it_map->second).get_nom() << " (logic value : " <<(it_map->second).get_valeur() << ") apply to " << noeud.get_nom() << endl;
+    }
   }
 
   switch ( noeud.get_type() ) {
@@ -141,7 +143,9 @@ static void fonction_recursive(Noeud &noeud, map<string, Noeud> &noeud_map){
       default:
         break;
   }
-  cout << noeud.get_nom( ) << " result : "<< noeud.get_valeur( ) << endl;
+  if(debug){
+    cout << "simulateur.cpp, DEBUG : " << noeud.get_nom( ) << " result : "<< noeud.get_valeur( ) << endl;
+  }
 }
 
 static bool can_we_apply_stimu_at_index(vector<Stimulus> stimulus_vector, int index){
@@ -218,7 +222,9 @@ vector<Stimulus> Simulateur(map<string, Noeud> noeud_map, vector<Stimulus> stimu
 
       case CALCULATE_OUTPUTS :
         calculate_outputs(noeud_map, output_result_vector);
-        cout << "\nOutputs calculation cycle "<< ++cpt_simulation_cycle << " is over\n" << endl;
+        if(debug){
+          cout  << "simulateur.cpp, DEBUG : " << "Outputs calculation cycle "<< ++cpt_simulation_cycle << " is over\n" << endl;
+        }
         next_state = NEXT_INDEX;
         break;
 

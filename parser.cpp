@@ -31,15 +31,18 @@ using namespace std;
 vector <Stimulus> parser_json(vector<Symbole_json> &symbole_vector_json)
 {
   parser_decoupage_json(symbole_vector_json);
+  cout << "parser.cpp, INFO : PARSER DECOUPAGE .JSON FINISHED WITH SUCCES " << endl;
   vector <Stimulus> stimulus_vector= parser_create_stimulus_vector(symbole_vector_json);
+  cout << "parser.cpp, INFO : PARSER CREATE STIMULUS VECTOR .JSON FINISHED WITH SUCCES " << endl;
   return stimulus_vector;
 
 }
 
 
 map<string,Noeud> parser_dot(vector<Symbole> &symbole_vector){
-
-    parser_decoupage(symbole_vector);
-    map<string, Noeud>  noeud_vector = parser_structure(symbole_vector);
+    parser_decoupage_dot(symbole_vector);
+    cout << "parser.cpp, INFO : PARSER DECOUPAGE .DOT FINISHED WITH SUCCES " << endl;
+    map<string, Noeud>  noeud_vector = parser_nodes_and_links(symbole_vector);
+    cout << "parser.cpp, INFO : PARSER NODES AND LINKS (.DOT) FINISHED WITH SUCCES " << endl;
     return noeud_vector;
   }
