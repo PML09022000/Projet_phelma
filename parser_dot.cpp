@@ -86,38 +86,54 @@ static Noeud create_a_noeud(string str_name, string str_type){
     Noeud new_noeud(str_name, NOT, 1);
     return new_noeud;
   }
-  if(str_type == "AND2"){
-    Noeud new_noeud(str_name, ANDX, 2);
-    return new_noeud;
-  }
-  if(str_type == "NAND2"){
-    Noeud new_noeud(str_name, NANDX, 2);
-    return new_noeud;
-  }
-  if(str_type == "XNOR2"){
-    Noeud new_noeud(str_name, XNORX, 2);
-    return new_noeud;
-  }
-  if(str_type == "OR2"){
-    Noeud new_noeud(str_name, ORX, 2);
-    return new_noeud;
-  }
-  if(str_type == "NOR2"){
-    Noeud new_noeud(str_name, NORX, 2);
-    return new_noeud;
-  }
-  if(str_type == "XOR2"){
-    Noeud new_noeud(str_name, XORX, 2);
-    return new_noeud;
-  }
-  if(str_type == "XOR3"){
-    Noeud new_noeud(str_name, XORX, 3);
-    return new_noeud;
-  }
   if(str_type == "MUX2"){
-   Noeud new_noeud(str_name, MUXX, 2+1);
-   return new_noeud;
+    Noeud new_noeud(str_name, MUXX, 2+1);
+    return new_noeud;
+  }
+
+ string str_type_p1;
+ string str_type_p2;
+ for(unsigned int i = 0; i <= str_type.length(); i++)
+ {
+   while((str_type[i] >= 'A' && str_type[i] <= 'Z')){
+     str_type_p1.push_back(str_type[i]);
+     if (i < str_type.length()){
+       i++;
+     }
+   }
+   while((str_type[i] >= '2' && str_type[i] <= '9')){
+     str_type_p2.push_back(str_type[i]);
+     if (i < str_type.length()){
+       i++;
+     }
+   }
  }
+ const char * c = str_type_p2.c_str();
+  int nb_input = atoi(c);
+  if(str_type_p1 == "AND"){
+    Noeud new_noeud(str_name, ANDX, nb_input);
+    return new_noeud;
+  }
+  if(str_type_p1 == "NAND"){
+    Noeud new_noeud(str_name, NANDX, nb_input);
+    return new_noeud;
+  }
+  if(str_type_p1 == "XNOR"){
+    Noeud new_noeud(str_name, XNORX, nb_input);
+    return new_noeud;
+  }
+  if(str_type_p1 == "OR"){
+    Noeud new_noeud(str_name, ORX, nb_input);
+    return new_noeud;
+  }
+  if(str_type_p1 == "NOR"){
+    Noeud new_noeud(str_name, NORX, nb_input);
+    return new_noeud;
+  }
+  if(str_type_p1 == "XOR"){
+    Noeud new_noeud(str_name, XORX, nb_input);
+    return new_noeud;
+  }
   else{
     Noeud default_n(str_name, OTHER, 0);
     return default_n;
@@ -376,7 +392,7 @@ map<string, Noeud>  parser_nodes_and_links(vector<Symbole> &symbole_vector){
                 break;
 
               case NEED_TO_ADD_SPECIAL_LINK_OR_NOT :
-                if( (*(it1+7)).get_valeur() == "sel" && (*(it1+10)).get_nature() == identifiant ){
+                if( (*(it1+7)).get_valeur() == "sel" && (*(it1+10)).get_nature() == mot_clef ){
                   it = noeud_map.find((*it1).get_valeur());
                   (it->second).add_link_to_previous_noeud((*(it1+10)).get_valeur());
                 }else{
@@ -386,17 +402,45 @@ map<string, Noeud>  parser_nodes_and_links(vector<Symbole> &symbole_vector){
 
                 break;
 
+              // case NEED_TO_ADD_SPECIAL_LINK_OR_NOT :
+              //   it = noeud_map.find((*it1).get_valeur());
+              //   if( (it->second).get_type( ) == MUXX ){
+              //     next_state = GET_SELS_MOINS1;
+              //   }else{
+              //     next_state = FINISHED;
+              //   }
+              //
+              //   break;
+              //
+              // case GET_SELS_MOINS1 :
+              //   nb_sel_moins1 = round(log2((it->second).get_nb_inout( )) )-1;
+              //   if( (*(it1+7)).get_valeur() == "sel" && (*(it1+10)).get_nature() == mot_clef ){
+              //     (it->second).add_link_to_previous_noeud((*(it1+10)).get_valeur());
+              //   }
+              //   for(int i = 1 ; i <= nb_sel_moins1 ; i++){
+              //     if((*(it1+7+(5*i))).get_valeur() == "sel" && (*(it1+10+(5*i))).get_nature() == mot_clef ){
+              //         (it->second).add_link_to_previous_noeud((*(it1+10+(5*i))).get_valeur());
+              //     }
+              //     else{
+              //       break;
+              //     }
+              //   }
+              //   (it->second).set_nb_inout((nb_sel_moins1 + 1) + (it->second).get_nb_inout());
+              //   next_state = FINISHED;
+              //   break;
+
+
               case OLD_IDENTIFIANT :
-                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : IS_IT_SPECIAL_LINK_OR_NOT;
+                next_state = (is_there_a_link( (*(it1-1)).get_nature(), (*(it1+1)).get_nature() ) == true ) ? ADD_LINK : ERROR_VARIABLE_LINKS_G;
               break;
 
-              case IS_IT_SPECIAL_LINK_OR_NOT:
-                if( (*(it1-1)).get_nature() == ponctuation && (*(it1+1)).get_nature() == ponctuation && (*(it1-3)).get_nature() == mot_clef ){
-                  next_state = FINISHED;
-                }else{
-                  next_state = ERROR_VARIABLE_LINKS_G;
-                }
-                break;
+              // case IS_IT_SPECIAL_LINK_OR_NOT:
+              //   if( (*(it1-1)).get_nature() == ponctuation && (*(it1+1)).get_nature() == ponctuation && (*(it1-3)).get_nature() == mot_clef ){
+              //     next_state = FINISHED;
+              //   }else{
+              //     next_state = ERROR_VARIABLE_LINKS_G;
+              //   }
+              //   break;
 
               case ADD_LINK :
                 it = noeud_map.find((*it1).get_valeur());
